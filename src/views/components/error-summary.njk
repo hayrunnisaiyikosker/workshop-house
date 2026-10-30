@@ -1,0 +1,12 @@
+{% if errors and errors.summary.length > 0 %}
+<div class="error-summary" role="alert" aria-labelledby="error-summary-title" tabindex="-1" autofocus>
+  <h2 id="error-summary-title">There is a problem</h2>
+  <ul>
+    {% for item in errors.summary %}
+      <li>
+        <a href="#{{ item.field }}">{{ item.message }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+{% endif %}

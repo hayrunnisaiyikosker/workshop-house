@@ -1,0 +1,24 @@
+{% macro badge(status, label=null) %}
+{% set text = label if label else status %}
+{% if status == 'active' %}
+  <span class="status-badge status-active">
+    <span aria-hidden="true">&#10003;</span> {{ text | capitalize }}
+  </span>
+{% elseif status == 'cancelled' %}
+  <span class="status-badge status-cancelled">
+    <span aria-hidden="true">&#10007;</span> {{ text | capitalize }}
+  </span>
+{% elseif status == 'attended' %}
+  <span class="status-badge status-attended">
+    <span aria-hidden="true">&#10003;</span> {{ text | capitalize }}
+  </span>
+{% elseif status == 'absent' %}
+  <span class="status-badge status-absent">
+    <span aria-hidden="true">&#8722;</span> {{ text | capitalize }}
+  </span>
+{% else %}
+  <span class="status-badge">
+    <span aria-hidden="true">&#9679;</span> {{ text | capitalize }}
+  </span>
+{% endif %}
+{% endmacro %}

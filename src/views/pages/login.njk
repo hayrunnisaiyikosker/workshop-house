@@ -1,0 +1,48 @@
+{% extends "layout.njk" %}
+{% import "components/form-field.njk" as forms %}
+
+{% block content %}
+<div style="max-width: 480px; margin: 0 auto;">
+  <h1>Sign In</h1>
+
+  {% include "components/error-summary.njk" %}
+
+  <form action="/auth/login" method="POST" novalidate>
+    {{ forms.input(
+      name="email",
+      label="Email Address",
+      type="email",
+      value=values.email if values else "",
+      error=errors.byField.email if errors else null,
+      required=true,
+      autocomplete="email"
+    ) }}
+
+    {{ forms.input(
+      name="password",
+      label="Password",
+      type="password",
+      value="",
+      error=errors.byField.password if errors else null,
+      required=true,
+      autocomplete="current-password"
+    ) }}
+
+    <div style="margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-primary" style="width: 100%;">Sign In</button>
+    </div>
+  </form>
+
+  <div class="card" style="margin-top: 2rem; font-size: 0.875rem;">
+    <h2>Demo Accounts</h2>
+    <p>All demo accounts use password: <code>Password123!</code></p>
+    <ul>
+      <li><strong>Coordinator:</strong> coordinator@workshophouse.test</li>
+      <li><strong>Trainer 1:</strong> alice.trainer@workshophouse.test</li>
+      <li><strong>Trainer 2:</strong> bob.trainer@workshophouse.test</li>
+      <li><strong>Learner 1:</strong> charlie.learner@workshophouse.test</li>
+      <li><strong>Learner 2:</strong> diana.learner@workshophouse.test</li>
+    </ul>
+  </div>
+</div>
+{% endblock %}

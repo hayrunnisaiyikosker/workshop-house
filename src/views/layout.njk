@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" 
+  data-text-scale="{{ currentUser.preferences.text_scale or '100' }}"
+  data-high-contrast="{{ 'true' if currentUser.preferences.high_contrast else 'false' }}"
+  data-reduced-motion="{{ 'true' if currentUser.preferences.reduced_motion else 'false' }}"
+>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ pageTitle or "Workshop House" }}</title>
+  <link rel="stylesheet" href="/css/theme.css" />
+  {% block head %}{% endblock %}
+</head>
+<body>
+  <!-- Skip to main content link (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+
+  <!-- Header landmark (WCAG 1.3.1) -->
+  <header class="site-header" role="banner">
+    <div class="header-container">
+      <a href="/" class="brand-link" aria-label="Workshop House homepage">Workshop House</a>
+      
+      <!-- Nav landmark (WCAG 1.3.1) -->
+      <nav class="main-nav" aria-label="Main navigation">
+        <ul>
+          <li><a href="/">Home</a></li>
+          {% if currentUser %}
+            {% if currentUser.role == 'coordinator' %}
+              <li><a href="/coordinator/sessions">Manage Sessions</a></li>
+            {% endif %}
+            {% if currentUser.role == 'trainer' %}
+              <li><a href="/trainer/sessions">Trainer Sessions</a></li>
+            {% endif %}
+            {% if currentUser.role == 'learner' %}
+              <li><a href="/my-sessions">My Sessions</a></li>
+            {% endif %}
+            <li><a href="/preferences">Preferences</a></li>
+            <li>
+              <span>Signed in as <strong>{{ currentUser.name }}</strong> ({{ currentUser.role }})</span>
+            </li>
+            <li>
+              <form action="/auth/logout" method="POST" style="display: inline;">
+                <button type="submit" class="btn btn-secondary nav-btn">Sign Out</button>
+              </form>
+            </li>
+          {% else %}
+            <li><a href="/auth/login" class="btn btn-primary nav-btn">Sign In</a></li>
+          {% endif %}
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Flash messages live regions (WCAG 4.1.3) -->
+  {% if flashSuccess %}
+    <div class="site-main" style="min-height: auto; margin-bottom: 0;">
+      <div class="alert alert-success" role="status" aria-live="polite">
+        {{ flashSuccess }}
+      </div>
+    </div>
+  {% endif %}
+  {% if flashError %}
+    <div class="site-main" style="min-height: auto; margin-bottom: 0;">
+      <div class="alert alert-error" role="alert" aria-live="assertive">
+        {{ flashError }}
+      </div>
+    </div>
+  {% endif %}
+
+  <!-- Main content landmark (WCAG 1.3.1) -->
+  <main id="main-content" class="site-main">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Footer landmark (WCAG 1.3.1) -->
+  <footer class="site-footer" role="contentinfo">
+    <p>&copy; 2026 Workshop House &bull; Advanced Web Programming</p>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

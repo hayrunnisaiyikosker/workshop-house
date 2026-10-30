@@ -1,0 +1,31 @@
+{% macro input(name, label, type='text', value='', error=null, required=false, hint=null, autocomplete=null) %}
+<div class="form-group">
+  <label for="{{ name }}" class="form-label">
+    {{ label }}
+    {% if required %}<span aria-hidden="true">*</span>{% endif %}
+  </label>
+  {% if hint %}
+    <p id="{{ name }}-hint" class="form-hint">{{ hint }}</p>
+  {% endif %}
+  {% if error %}
+    <span id="{{ error.id }}" class="field-error" role="alert">
+      <span aria-hidden="true">&#9888; </span>{{ error.message }}
+    </span>
+  {% endif %}
+  <input
+    id="{{ name }}"
+    name="{{ name }}"
+    type="{{ type }}"
+    value="{{ value }}"
+    class="form-input"
+    {% if autocomplete %}autocomplete="{{ autocomplete }}"{% endif %}
+    {% if required %}required aria-required="true"{% endif %}
+    {% if error %}
+      aria-invalid="true"
+      aria-describedby="{% if hint %}{{ name }}-hint {% endif %}{{ error.id }}"
+    {% elseif hint %}
+      aria-describedby="{{ name }}-hint"
+    {% endif %}
+  />
+</div>
+{% endmacro %}

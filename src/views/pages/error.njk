@@ -1,0 +1,11 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="card" style="border-color: var(--color-error-border);">
+  <h1>{{ statusCode }} - {{ title or "An error occurred" }}</h1>
+  <p>{{ message or "We encountered an unexpected error processing your request." }}</p>
+  <div style="margin-top: 1.5rem;">
+    <a href="/" class="btn btn-primary">Return to Homepage</a>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,28 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="card">
+  <h1>Welcome to Workshop House</h1>
+  <p>Workshop House is a dedicated platform for organizing, attending, and managing short intensive technical courses and workshops.</p>
+  
+  {% if currentUser %}
+    <div class="alert alert-info">
+      <p>You are signed in as <strong>{{ currentUser.name }}</strong> with the role of <strong>{{ currentUser.role | capitalize }}</strong>.</p>
+    </div>
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+      {% if currentUser.role == 'coordinator' %}
+        <a href="/coordinator/sessions" class="btn btn-primary">Go to Coordinator Dashboard</a>
+      {% elseif currentUser.role == 'trainer' %}
+        <a href="/trainer/sessions" class="btn btn-primary">Go to Trainer Dashboard</a>
+      {% else %}
+        <a href="/my-sessions" class="btn btn-primary">View My Enrolled Sessions</a>
+      {% endif %}
+    </div>
+  {% else %}
+    <p>Please sign in to view available workshop sessions and manage your enrollments.</p>
+    <div style="margin-top: 1.5rem;">
+      <a href="/auth/login" class="btn btn-primary">Sign In to Your Account</a>
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

@@ -10,18 +10,20 @@
       <p>You are signed in as <strong>{{ currentUser.name }}</strong> with the role of <strong>{{ currentUser.role | capitalize }}</strong>.</p>
     </div>
     <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+      <a href="/sessions" class="btn btn-primary">Browse All Workshops</a>
       {% if currentUser.role == 'coordinator' %}
-        <a href="/coordinator/sessions" class="btn btn-primary">Go to Coordinator Dashboard</a>
+        <a href="/coordinator/sessions" class="btn btn-secondary">Coordinator Dashboard</a>
       {% elseif currentUser.role == 'trainer' %}
-        <a href="/trainer/sessions" class="btn btn-primary">Go to Trainer Dashboard</a>
+        <a href="/trainer/sessions" class="btn btn-secondary">Trainer Dashboard</a>
       {% else %}
-        <a href="/my-sessions" class="btn btn-primary">View My Enrolled Sessions</a>
+        <a href="/my-sessions" class="btn btn-secondary">My Enrolled Sessions</a>
       {% endif %}
     </div>
   {% else %}
     <p>Please sign in to view available workshop sessions and manage your enrollments.</p>
-    <div style="margin-top: 1.5rem;">
+    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
       <a href="/auth/login" class="btn btn-primary">Sign In to Your Account</a>
+      <a href="/sessions" class="btn btn-secondary">Browse Available Workshops</a>
     </div>
   {% endif %}
 </div>

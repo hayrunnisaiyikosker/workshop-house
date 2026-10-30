@@ -1,0 +1,54 @@
+{% extends "layout.njk" %}
+{% import "components/form-field.njk" as forms %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+  <p><a href="/coordinator/courses">&larr; Back to Courses list</a></p>
+
+  <h1>{{ "Edit Course" if isEdit else "Create New Course" }}</h1>
+
+  {% include "components/error-summary.njk" %}
+
+  <form action="{{ '/coordinator/courses/' + courseId + '/edit' if isEdit else '/coordinator/courses/new' }}" method="POST" novalidate>
+    {{ forms.input(
+      name="title",
+      label="Course Title",
+      value=values.title if values else "",
+      error=errors.byField.title if errors else null,
+      required=true,
+      hint="Provide a descriptive name for the course (3-200 characters)"
+    ) }}
+
+    <div class="form-group">
+      <label for="description" class="form-label">
+        Description <span aria-hidden="true">*</span>
+      </label>
+      <p id="desc-hint" class="form-hint" style="font-size: 0.875rem; color: var(--color-text-muted);">
+        Detailed syllabus or summary of topics covered in this course (minimum 10 characters).
+      </p>
+      {% if errors and errors.byField.description %}
+        <span id="description-error" class="field-error" role="alert">
+          <span aria-hidden="true">&#9888; </span>{{ errors.byField.description.message }}
+        </span>
+      {% endif %}
+      <textarea
+        id="description"
+        name="description"
+        rows="5"
+        class="form-textarea"
+        required
+        aria-required="true"
+        aria-describedby="desc-hint{% if errors and errors.byField.description %} description-error{% endif %}"
+        {% if errors and errors.byField.description %}aria-invalid="true"{% endif %}
+      >{{ values.description if values else "" }}</textarea>
+    </div>
+
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-primary">
+        {{ "Save Changes" if isEdit else "Create Course" }}
+      </button>
+      <a href="/coordinator/courses" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

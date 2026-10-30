@@ -1,0 +1,84 @@
+{% extends "layout.njk" %}
+{% import "components/status-badge.njk" as badges %}
+
+{% block content %}
+<div class="header-container" style="margin-bottom: 1.5rem; justify-content: space-between;">
+  <h1>My Workshop Sessions</h1>
+  <a href="/sessions" class="btn btn-primary">Browse All Workshops &rarr;</a>
+</div>
+
+{% if enrollments.length === 0 %}
+  <div class="card">
+    <p>You have not enrolled in any workshop sessions yet.</p>
+    <div style="margin-top: 1rem;">
+      <a href="/sessions" class="btn btn-primary">Explore Available Sessions</a>
+    </div>
+  </div>
+{% else %}
+  <div class="table-responsive">
+    <table aria-label="My enrolled workshop sessions">
+      <thead>
+        <tr>
+          <th scope="col">Course Title</th>
+          <th scope="col">Status</th>
+          <th scope="col">Schedule & Room</th>
+          <th scope="col">Trainer</th>
+          <th scope="col">Check-in Code</th>
+          <th scope="col">Materials</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in enrollments %}
+          <tr>
+            <td>
+              <strong><a href="/sessions/{{ e.session_id }}">{{ e.course_title }}</a></strong>
+            </td>
+            <td>{{ badges.badge(e.status) }}</td>
+            <td>
+              <div>{{ e.starts_at | formatDate }}</div>
+              <small style="color: var(--color-text-muted);">{{ e.room }}</small>
+            </td>
+            <td>{{ e.trainer_name }}</td>
+            <td>
+              {% if e.status == 'active' %}
+                <code style="font-size: 1.1rem; font-weight: 700; letter-spacing: 1px;">{{ e.checkin_code }}</code>
+              {% else %}
+                <span style="color: var(--color-text-muted);">&mdash;</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if e.can_view_resource %}
+                <a href="{{ e.resource_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary" style="min-height: 36px; padding: 0.25rem 0.6rem;">
+                  Access &rarr;
+                </a>
+              {% else %}
+                <span style="color: var(--color-text-muted); font-size: 0.875rem;">Not available</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if e.status == 'active' %}
+                <form action="/sessions/{{ e.session_id }}/cancel" method="POST" onsubmit="return confirm('Are you sure you want to cancel this enrollment? This will free your seat.');">
+                  <button type="submit" class="btn btn-secondary" style="min-height: 36px; padding: 0.25rem 0.6rem; color: var(--color-error-text); border-color: var(--color-error-border);">
+                    Cancel
+                  </button>
+                </form>
+              {% elseif e.status == 'cancelled' %}
+                {% if e.remaining_seats > 0 %}
+                  <form action="/sessions/{{ e.session_id }}/enroll" method="POST">
+                    <button type="submit" class="btn btn-primary" style="min-height: 36px; padding: 0.25rem 0.6rem;">
+                      Re-enroll
+                    </button>
+                  </form>
+                {% else %}
+                  <span style="color: var(--color-error-text); font-size: 0.875rem; font-weight: 700;">Full</span>
+                {% endif %}
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}

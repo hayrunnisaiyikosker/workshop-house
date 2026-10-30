@@ -10,6 +10,10 @@ import { populateUser } from './middleware/auth.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import { authRouter } from './routes/auth.js';
 import { homeRouter } from './routes/home.js';
+import { coordinatorRouter } from './routes/coordinator.js';
+import { sessionsRouter } from './routes/sessions.js';
+import { trainerRouter } from './routes/trainer.js';
+import { learnerRouter } from './routes/learner.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,6 +35,25 @@ export function createApp(): express.Application {
     return str.charAt(0).toUpperCase() + str.slice(1);
   });
 
+  nunjucksEnv.addFilter('formatDate', (val: unknown) => {
+    if (!val) return '';
+    const d = val instanceof Date ? val : new Date(String(val));
+    return isNaN(d.getTime()) ? '' : d.toISOString().replace('T', ' ').slice(0, 16);
+  });
+
+  nunjucksEnv.addFilter('truncate', (val: unknown, len: number, killwords: boolean, end: string) => {
+    if (val === null || val === undefined) return '';
+    const str = val instanceof Date ? val.toISOString() : String(val);
+    const length = len || 255;
+    if (str.length <= length) return str;
+    const ending = end !== undefined ? end : '...';
+    if (killwords) {
+      return str.substring(0, length) + ending;
+    }
+    const idx = str.lastIndexOf(' ', length);
+    return (idx === -1 ? str.substring(0, length) : str.substring(0, idx)) + ending;
+  });
+
   app.set('view engine', 'njk');
 
   // Static assets
@@ -46,7 +69,7 @@ export function createApp(): express.Application {
   const sessionStore = new PgSessionStore({
     pool,
     tableName: 'session',
-    createTableIfMissing: false, // Created via our plain SQL migration
+    createTableIfMissing: false,
   });
 
   app.use(
@@ -69,6 +92,10 @@ export function createApp(): express.Application {
 
   // Mount routes
   app.use('/auth', authRouter);
+  app.use('/coordinator', coordinatorRouter);
+  app.use('/sessions', sessionsRouter);
+  app.use('/trainer', trainerRouter);
+  app.use('/', learnerRouter);
   app.use('/', homeRouter);
 
   // 404 handler

@@ -106,7 +106,7 @@ describe('Authentication & Role-Based Access Control', () => {
 
     const coordRes = await agent.get('/coordinator/sessions');
     expect(coordRes.status).toBe(200);
-    expect(coordRes.text).toContain('Coordinator Area');
+    expect(coordRes.text).toContain('Manage Sessions');
   });
 
   it('allows trainer to access trainer area and denies learner', async () => {
@@ -117,7 +117,7 @@ describe('Authentication & Role-Based Access Control', () => {
 
     const trainerRes = await trainerAgent.get('/trainer/sessions');
     expect(trainerRes.status).toBe(200);
-    expect(trainerRes.text).toContain('Trainer Area');
+    expect(trainerRes.text).toContain('Trainer Dashboard');
 
     const learnerAgent = request.agent(app);
     await learnerAgent

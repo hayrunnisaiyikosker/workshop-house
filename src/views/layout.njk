@@ -24,12 +24,14 @@
       <nav class="main-nav" aria-label="Main navigation">
         <ul>
           <li><a href="/">Home</a></li>
+          <li><a href="/sessions">Workshops</a></li>
           {% if currentUser %}
             {% if currentUser.role == 'coordinator' %}
               <li><a href="/coordinator/sessions">Manage Sessions</a></li>
+              <li><a href="/coordinator/courses">Manage Courses</a></li>
             {% endif %}
             {% if currentUser.role == 'trainer' %}
-              <li><a href="/trainer/sessions">Trainer Sessions</a></li>
+              <li><a href="/trainer/sessions">My Sessions</a></li>
             {% endif %}
             {% if currentUser.role == 'learner' %}
               <li><a href="/my-sessions">My Sessions</a></li>

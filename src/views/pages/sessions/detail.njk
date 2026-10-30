@@ -1,0 +1,110 @@
+{% extends "layout.njk" %}
+{% import "components/status-badge.njk" as badges %}
+
+{% block content %}
+<div style="max-width: 720px; margin: 0 auto;">
+  <p><a href="/sessions">&larr; Back to all sessions</a></p>
+
+  <h1>{{ session.course_title }}</h1>
+
+  <div class="card">
+    <h2>Workshop Information</h2>
+    <p>{{ session.course_description }}</p>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+      <div>
+        <p style="margin: 0; font-weight: 700;">Trainer</p>
+        <p style="margin: 0.25rem 0 0 0;">{{ session.trainer_name }} ({{ session.trainer_email }})</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 700;">Location & Room</p>
+        <p style="margin: 0.25rem 0 0 0;">{{ session.room }}</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 700;">Start Time</p>
+        <p style="margin: 0.25rem 0 0 0;">{{ session.starts_at }}</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 700;">End Time</p>
+        <p style="margin: 0.25rem 0 0 0;">{{ session.ends_at }}</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 700;">Total Capacity</p>
+        <p style="margin: 0.25rem 0 0 0;">{{ session.capacity }} seats</p>
+      </div>
+      <div>
+        <p style="margin: 0; font-weight: 700;">Available Seats</p>
+        <p style="margin: 0.25rem 0 0 0; font-weight: 700; color: {% if session.remaining_seats <= 0 %}var(--color-error-text){% else %}var(--color-success-text){% endif %};">
+          {{ session.remaining_seats }} of {{ session.capacity }} seats remaining
+        </p>
+      </div>
+    </div>
+
+    <!-- Resource link: visible ONLY to active learners, trainer, or coordinator -->
+    <div style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid var(--color-border);">
+      <h3>Course Materials & Resources</h3>
+      {% if session.can_view_resource %}
+        <p>
+          <a href="{{ session.resource_url }}" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+            Access Course Materials &rarr;
+          </a>
+        </p>
+      {% elseif not session.resource_url %}
+        <p style="color: var(--color-text-muted);">No external course resource link has been posted for this session yet.</p>
+      {% else %}
+        <p style="color: var(--color-text-muted);">
+          Course materials are restricted to actively enrolled learners and course staff.
+        </p>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Enrollment Action Box -->
+  <div class="card" style="margin-top: 1.5rem;">
+    <h2>Your Enrollment</h2>
+    {% if not currentUser %}
+      <p>You must be signed in to enroll in this workshop session.</p>
+      <a href="/auth/login" class="btn btn-primary">Sign In to Enroll</a>
+    {% elseif currentUser.role != 'learner' %}
+      <p>You are signed in as a <strong>{{ currentUser.role }}</strong>. Only learners may enroll in sessions.</p>
+    {% else %}
+      {% if session.my_enrollment_status == 'active' %}
+        <div class="alert alert-success">
+          <p>You are <strong>actively enrolled</strong> in this session.</p>
+          {% if session.my_checkin_code %}
+            <p>Your check-in code: <strong style="font-size: 1.25rem; letter-spacing: 2px;">{{ session.my_checkin_code }}</strong></p>
+          {% endif %}
+        </div>
+        <form action="/sessions/{{ session.id }}/cancel" method="POST">
+          <button type="submit" class="btn btn-secondary" style="color: var(--color-error-text); border-color: var(--color-error-border);">
+            Cancel My Enrollment
+          </button>
+        </form>
+      {% elseif session.my_enrollment_status == 'cancelled' %}
+        <div class="alert alert-error">
+          <p>Your enrollment was previously cancelled.</p>
+        </div>
+        {% if session.remaining_seats > 0 %}
+          <form action="/sessions/{{ session.id }}/enroll" method="POST">
+            <button type="submit" class="btn btn-primary">Re-enroll in this Session</button>
+          </form>
+        {% else %}
+          <p style="color: var(--color-error-text); font-weight: 700;">
+            This session is currently full (0 of {{ session.capacity }} seats available). You cannot re-enroll at this time.
+          </p>
+        {% endif %}
+      {% else %}
+        {% if session.remaining_seats > 0 %}
+          <form action="/sessions/{{ session.id }}/enroll" method="POST">
+            <button type="submit" class="btn btn-primary">Enroll in this Session</button>
+          </form>
+        {% else %}
+          <p style="color: var(--color-error-text); font-weight: 700;">
+            This session is currently full ({{ session.capacity }} of {{ session.capacity }} seats taken).
+          </p>
+        {% endif %}
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+{% endblock %}

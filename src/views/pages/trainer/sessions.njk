@@ -1,0 +1,58 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="header-container" style="margin-bottom: 1.5rem; justify-content: space-between;">
+  <h1>Trainer Dashboard - My Assigned Sessions</h1>
+</div>
+
+{% if sessions.length === 0 %}
+  <div class="card">
+    <p>You have not been assigned as the instructor for any workshop sessions yet.</p>
+  </div>
+{% else %}
+  <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+    {% for s in sessions %}
+      <div class="card">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1rem;">
+          <div>
+            <h2 style="margin: 0;"><a href="/sessions/{{ s.id }}">{{ s.course_title }}</a></h2>
+            <p style="margin: 0.25rem 0; color: var(--color-text-muted);">
+              <strong>Schedule:</strong> {{ s.starts_at | formatDate }} &ndash; {{ s.ends_at | formatDate }} &bull;
+              <strong>Room:</strong> {{ s.room }} &bull;
+              <strong>Enrolled:</strong> {{ s.active_enrollments }} / {{ s.capacity }} ({{ s.remaining_seats }} free)
+            </p>
+          </div>
+          <div>
+            <a href="/sessions/{{ s.id }}" class="btn btn-secondary" style="min-height: 36px; padding: 0.35rem 0.75rem;">
+              View Public Page
+            </a>
+          </div>
+        </div>
+
+        <!-- Resource Link Update Form -->
+        <div style="margin-top: 1.25rem; padding-top: 1rem; border-top: 1px solid var(--color-border);">
+          <form action="/trainer/sessions/{{ s.id }}/resource" method="POST" style="display: flex; gap: 0.75rem; align-items: flex-end; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+              <label for="resource-url-{{ s.id }}" class="form-label" style="font-size: 0.875rem;">
+                Workshop Resource Link (Slides, GitHub repo, drive)
+              </label>
+              <input
+                id="resource-url-{{ s.id }}"
+                name="resource_url"
+                type="url"
+                value="{{ s.resource_url or '' }}"
+                placeholder="https://..."
+                class="form-input"
+                style="min-height: 38px; padding: 0.4rem 0.6rem;"
+              />
+            </div>
+            <button type="submit" class="btn btn-primary" style="min-height: 38px; padding: 0.4rem 1rem;">
+              Update Resource
+            </button>
+          </form>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,127 @@
+{% extends "layout.njk" %}
+{% import "components/form-field.njk" as forms %}
+
+{% block content %}
+<div style="max-width: 650px; margin: 0 auto;">
+  <p><a href="/coordinator/sessions">&larr; Back to Sessions list</a></p>
+
+  <h1>{{ "Edit Session" if isEdit else "Create New Workshop Session" }}</h1>
+
+  {% include "components/error-summary.njk" %}
+
+  <form action="{{ '/coordinator/sessions/' + sessionId + '/edit' if isEdit else '/coordinator/sessions/new' }}" method="POST" novalidate>
+    <!-- Course selection -->
+    <div class="form-group">
+      <label for="course_id" class="form-label">
+        Course <span aria-hidden="true">*</span>
+      </label>
+      {% if errors and errors.byField.course_id %}
+        <span id="course_id-error" class="field-error" role="alert">
+          <span aria-hidden="true">&#9888; </span>{{ errors.byField.course_id.message }}
+        </span>
+      {% endif %}
+      <select 
+        id="course_id" 
+        name="course_id" 
+        class="form-select" 
+        required 
+        aria-required="true"
+        {% if errors and errors.byField.course_id %}aria-invalid="true" aria-describedby="course_id-error"{% endif %}
+      >
+        <option value="">-- Select a Course --</option>
+        {% for c in courses %}
+          <option value="{{ c.id }}" {% if values and values.course_id == c.id %}selected{% endif %}>
+            {{ c.title }}
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <!-- Trainer selection -->
+    <div class="form-group">
+      <label for="trainer_id" class="form-label">
+        Assigned Trainer <span aria-hidden="true">*</span>
+      </label>
+      {% if errors and errors.byField.trainer_id %}
+        <span id="trainer_id-error" class="field-error" role="alert">
+          <span aria-hidden="true">&#9888; </span>{{ errors.byField.trainer_id.message }}
+        </span>
+      {% endif %}
+      <select 
+        id="trainer_id" 
+        name="trainer_id" 
+        class="form-select" 
+        required 
+        aria-required="true"
+        {% if errors and errors.byField.trainer_id %}aria-invalid="true" aria-describedby="trainer_id-error"{% endif %}
+      >
+        <option value="">-- Select a Trainer --</option>
+        {% for t in trainers %}
+          <option value="{{ t.id }}" {% if values and values.trainer_id == t.id %}selected{% endif %}>
+            {{ t.name }} ({{ t.email }})
+          </option>
+        {% endfor %}
+      </select>
+    </div>
+
+    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      {{ forms.input(
+        name="starts_at",
+        label="Start Date & Time",
+        type="datetime-local",
+        value=values.starts_at if values else "",
+        error=errors.byField.starts_at if errors else null,
+        required=true
+      ) }}
+
+      {{ forms.input(
+        name="ends_at",
+        label="End Date & Time",
+        type="datetime-local",
+        value=values.ends_at if values else "",
+        error=errors.byField.ends_at if errors else null,
+        required=true
+      ) }}
+    </div>
+
+    <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1rem;">
+      {{ forms.input(
+        name="room",
+        label="Room / Location",
+        type="text",
+        value=values.room if values else "",
+        error=errors.byField.room if errors else null,
+        required=true,
+        hint="e.g. Lab 204 or Seminar Room B"
+      ) }}
+
+      {{ forms.input(
+        name="capacity",
+        label="Capacity",
+        type="number",
+        value=values.capacity if values else "",
+        error=errors.byField.capacity if errors else null,
+        required=true,
+        hint="Active: " + (activeEnrollments if activeEnrollments is defined else 0) if isEdit else "Max attendees"
+      ) }}
+    </div>
+
+    {{ forms.input(
+      name="resource_url",
+      label="Course Resource Link (Optional)",
+      type="url",
+      value=values.resource_url if values and values.resource_url else "",
+      error=errors.byField.resource_url if errors else null,
+      required=false,
+      hint="Valid URL (e.g. https://github.com/... or https://drive.google.com/...)"
+    ) }}
+
+    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+      <button type="submit" class="btn btn-primary">
+        {{ "Update Session" if isEdit else "Create Session" }}
+      </button>
+      <a href="/coordinator/sessions" class="btn btn-secondary">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

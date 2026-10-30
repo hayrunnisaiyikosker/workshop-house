@@ -1,0 +1,59 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="header-container" style="margin-bottom: 1.5rem; justify-content: space-between;">
+  <h1>Manage Workshop Sessions</h1>
+  <a href="/coordinator/sessions/new" class="btn btn-primary">+ Create New Session</a>
+</div>
+
+<p>
+  <a href="/coordinator/courses">&rarr; Switch to Manage Courses</a>
+</p>
+
+{% if sessions.length === 0 %}
+  <div class="card">
+    <p>No workshop sessions exist yet. Click "+ Create New Session" to schedule a session.</p>
+  </div>
+{% else %}
+  <div class="table-responsive">
+    <table aria-label="Session list for coordinator">
+      <thead>
+        <tr>
+          <th scope="col">Course Title</th>
+          <th scope="col">Trainer</th>
+          <th scope="col">Room</th>
+          <th scope="col">Schedule</th>
+          <th scope="col">Capacity</th>
+          <th scope="col">Enrolled / Free</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sessions %}
+          <tr>
+            <td><strong><a href="/sessions/{{ s.id }}">{{ s.course_title }}</a></strong></td>
+            <td>{{ s.trainer_name }}</td>
+            <td>{{ s.room }}</td>
+            <td>{{ s.starts_at | formatDate }} &ndash; {{ s.ends_at | formatDate }}</td>
+            <td>{{ s.capacity }}</td>
+            <td>
+              <strong>{{ s.active_enrollments }}</strong> enrolled / 
+              <span style="color: {% if s.remaining_seats <= 0 %}var(--color-error-text){% else %}var(--color-success-text){% endif %}; font-weight: 700;">
+                {{ s.remaining_seats }} free
+              </span>
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.5rem;">
+                <a href="/coordinator/sessions/{{ s.id }}/edit" class="btn btn-secondary" style="min-height: 36px; padding: 0.25rem 0.6rem;">Edit</a>
+                <form action="/coordinator/sessions/{{ s.id }}/delete" method="POST" onsubmit="return confirm('Are you sure you want to delete this session? All enrollments will be permanently removed.');">
+                  <button type="submit" class="btn btn-secondary" style="min-height: 36px; padding: 0.25rem 0.6rem; color: var(--color-error-text);">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}

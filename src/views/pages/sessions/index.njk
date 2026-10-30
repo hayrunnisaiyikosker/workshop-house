@@ -1,0 +1,66 @@
+{% extends "layout.njk" %}
+{% import "components/status-badge.njk" as badges %}
+
+{% block content %}
+<div class="header-container" style="margin-bottom: 1.5rem; justify-content: space-between;">
+  <h1>Available Workshop Sessions</h1>
+  {% if currentUser and currentUser.role == 'coordinator' %}
+    <a href="/coordinator/sessions/new" class="btn btn-primary">+ Create New Session</a>
+  {% endif %}
+</div>
+
+{% if sessions.length === 0 %}
+  <div class="card">
+    <p>No workshop sessions are currently scheduled. Please check back later.</p>
+  </div>
+{% else %}
+  <div class="table-responsive">
+    <table aria-label="List of available workshop sessions">
+      <thead>
+        <tr>
+          <th scope="col">Course</th>
+          <th scope="col">Trainer</th>
+          <th scope="col">Schedule</th>
+          <th scope="col">Room</th>
+          <th scope="col">Seats Free</th>
+          <th scope="col">Your Status</th>
+          <th scope="col">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in sessions %}
+          <tr>
+            <td>
+              <strong><a href="/sessions/{{ s.id }}">{{ s.course_title }}</a></strong>
+            </td>
+            <td>{{ s.trainer_name }}</td>
+            <td>
+              {{ s.starts_at | formatDate }} &ndash; {{ s.ends_at | formatDate }}
+            </td>
+            <td>{{ s.room }}</td>
+            <td>
+              {% if s.remaining_seats <= 0 %}
+                <span style="color: var(--color-error-text); font-weight: 700;">Full (0 / {{ s.capacity }})</span>
+              {% else %}
+                <span style="font-weight: 600;">{{ s.remaining_seats }} of {{ s.capacity }} free</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if s.my_enrollment_status %}
+                {{ badges.badge(s.my_enrollment_status) }}
+              {% else %}
+                <span style="color: var(--color-text-muted);">Not enrolled</span>
+              {% endif %}
+            </td>
+            <td>
+              <a href="/sessions/{{ s.id }}" class="btn btn-secondary" style="min-height: 36px; padding: 0.35rem 0.75rem;">
+                Details
+              </a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}

@@ -221,7 +221,7 @@ h2 {
 
 .btn-primary {
   background-color: var(--color-primary);
-  color: var(--color-primary-contrast);
+  color: var(--color-primary-contrast) !important;
   border-color: var(--color-primary);
 }
 

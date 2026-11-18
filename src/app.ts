@@ -1,3 +1,4 @@
+import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import express from 'express';
@@ -23,8 +24,26 @@ const __dirname = path.dirname(__filename);
 export function createApp(): express.Application {
   const app = express();
 
+  // Trust proxy for secure cookies behind Render/Railway
+  if (env.NODE_ENV === 'production') {
+    app.set('trust proxy', 1);
+  }
+
+  // Health check endpoint (checks DB with SELECT 1)
+  app.get('/healthz', async (_req, res) => {
+    try {
+      await pool.query('SELECT 1');
+      res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() });
+    } catch (err) {
+      console.error('Healthcheck failed:', err);
+      res.status(503).json({ status: 'error', message: 'Database connection failed' });
+    }
+  });
+
   // Nunjucks template engine
-  const viewsPath = path.join(__dirname, 'views');
+  const viewsPath = fs.existsSync(path.join(__dirname, 'views'))
+    ? path.join(__dirname, 'views')
+    : path.join(__dirname, '..', 'src', 'views');
   const nunjucksEnv = nunjucks.configure(viewsPath, {
     autoescape: true,
     express: app,

@@ -5,8 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc",
+    "build": "tsc && node --input-type=module -e \"import fs from 'node:fs'; fs.cpSync('src/views', 'dist/views', { recursive: true }); fs.cpSync('src/db/migrations', 'dist/db/migrations', { recursive: true });\"",
     "start": "node dist/server.js",
+    "start:prod": "npm run build && npm start",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:a11y": "playwright test tests/a11y",

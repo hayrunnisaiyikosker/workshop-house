@@ -1,3 +1,4 @@
+import fsSync from 'node:fs';
 import fs from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,7 +21,9 @@ export async function runMigrations(): Promise<void> {
       );
     `);
 
-    const migrationsDir = path.join(__dirname, 'migrations');
+    const migrationsDir = fsSync.existsSync(path.join(__dirname, 'migrations'))
+      ? path.join(__dirname, 'migrations')
+      : path.join(__dirname, '..', 'src', 'db', 'migrations');
     const files = await fs.readdir(migrationsDir);
     const sqlFiles = files.filter((f) => f.endsWith('.sql')).sort();
 

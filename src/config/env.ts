@@ -7,7 +7,10 @@ const envSchema = z.object({
   PORT: z.coerce.number().default(3000),
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   SESSION_SECRET: z.string().min(16, 'SESSION_SECRET must be at least 16 characters long'),
-  DATABASE_URL: z.string().min(1, 'DATABASE_URL is required'),
+  DATABASE_URL: z.string().min(1, 'DATABASE_URL is required').refine(
+    (url) => url.startsWith('postgresql://') || url.startsWith('postgres://'),
+    'DATABASE_URL must be a valid PostgreSQL connection string starting with postgresql:// or postgres://'
+  ),
 });
 
 const parsed = envSchema.safeParse(process.env);

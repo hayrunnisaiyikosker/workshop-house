@@ -22,9 +22,15 @@
               <strong>Enrolled:</strong> {{ s.active_enrollments }} / {{ s.capacity }} ({{ s.remaining_seats }} free)
             </p>
           </div>
-          <div>
+          <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <a href="/trainer/sessions/{{ s.id }}/attendance" class="btn btn-primary" style="min-height: 36px; padding: 0.35rem 0.75rem;">
+              Attendance &amp; Roster &rarr;
+            </a>
+            <a href="/trainer/sessions/{{ s.id }}/checkin" class="btn btn-secondary" style="min-height: 36px; padding: 0.35rem 0.75rem;">
+              Check-in Terminal
+            </a>
             <a href="/sessions/{{ s.id }}" class="btn btn-secondary" style="min-height: 36px; padding: 0.35rem 0.75rem;">
-              View Public Page
+              Public Page
             </a>
           </div>
         </div>

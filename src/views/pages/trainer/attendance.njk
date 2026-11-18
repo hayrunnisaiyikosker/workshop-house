@@ -1,0 +1,161 @@
+{% extends "layout.njk" %}
+{% import "components/status-badge.njk" as badges %}
+
+{% block content %}
+<div class="header-container" style="margin-bottom: 1rem; justify-content: space-between;">
+  <div>
+    <p style="margin: 0;"><a href="/trainer/sessions">&larr; Back to Trainer Sessions</a></p>
+    <h1 style="margin-top: 0.5rem;">Attendance & Completions</h1>
+  </div>
+  <div style="display: flex; gap: 0.5rem; align-items: flex-end;">
+    <a href="/trainer/sessions/{{ attendanceData.sessionId }}/checkin" class="btn btn-primary">
+      Open Check-in Terminal &rarr;
+    </a>
+  </div>
+</div>
+
+<!-- Session Summary Header Card -->
+<div class="card" style="margin-bottom: 2rem;">
+  <h2>{{ attendanceData.courseTitle }}</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
+    <div>
+      <p style="margin: 0; font-weight: 700;">Location & Room</p>
+      <p style="margin: 0.25rem 0 0 0;">{{ attendanceData.room }}</p>
+    </div>
+    <div>
+      <p style="margin: 0; font-weight: 700;">Schedule</p>
+      <p style="margin: 0.25rem 0 0 0;">{{ attendanceData.startsAt | formatDate }} &ndash; {{ attendanceData.endsAt | formatDate }}</p>
+    </div>
+    <div>
+      <p style="margin: 0; font-weight: 700;">Enrolled Attendees</p>
+      <p style="margin: 0.25rem 0 0 0;">{{ attendanceData.activeCount }} of {{ attendanceData.capacity }} seats</p>
+    </div>
+    <div>
+      <p style="margin: 0; font-weight: 700;">Marked Present</p>
+      <p style="margin: 0.25rem 0 0 0; font-weight: 700; color: var(--color-success-text);">
+        {{ attendanceData.attendedCount }} / {{ attendanceData.activeCount }}
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Roster / Attendance Table -->
+<h2>Active Participant Roster</h2>
+
+{% if attendanceData.items.length === 0 %}
+  <div class="card">
+    <p>No active enrollments for this session.</p>
+  </div>
+{% else %}
+  <div class="table-responsive">
+    <table aria-label="Participant attendance roster">
+      <thead>
+        <tr>
+          <th scope="col">Learner</th>
+          <th scope="col">Email</th>
+          <th scope="col">Attendance Status</th>
+          <th scope="col">Method</th>
+          <th scope="col">Completion</th>
+          <th scope="col">Manual Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in attendanceData.items %}
+          <tr>
+            <td><strong>{{ item.learner_name }}</strong></td>
+            <td>{{ item.learner_email }}</td>
+            <td>
+              {% if item.attendance_status %}
+                {{ badges.badge(item.attendance_status) }}
+              {% else %}
+                <span style="color: var(--color-text-muted);">Unrecorded</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if item.attendance_method == 'code' %}
+                <span style="font-size: 0.875rem; font-weight: 600;">QR / Code</span>
+              {% elseif item.attendance_method == 'manual' %}
+                <span style="font-size: 0.875rem; color: var(--color-text-muted);">Manual</span>
+              {% else %}
+                <span style="color: var(--color-text-muted);">&mdash;</span>
+              {% endif %}
+            </td>
+            <td>
+              {% if item.completed %}
+                <span class="status-badge status-attended">&#10003; Completed</span>
+              {% else %}
+                <span style="color: var(--color-text-muted);">Pending</span>
+              {% endif %}
+            </td>
+            <td>
+              <div style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <!-- Mark Attended -->
+                <form action="/trainer/sessions/{{ attendanceData.sessionId }}/attendance/{{ item.enrollment_id }}" method="POST">
+                  <input type="hidden" name="status" value="attended" />
+                  <button type="submit" class="btn btn-secondary" style="min-height: 36px; padding: 0.2rem 0.5rem; font-size: 0.875rem; color: var(--color-success-text);">
+                    Present
+                  </button>
+                </form>
+
+                <!-- Mark Absent -->
+                <form action="/trainer/sessions/{{ attendanceData.sessionId }}/attendance/{{ item.enrollment_id }}" method="POST">
+                  <input type="hidden" name="status" value="absent" />
+                  <button type="submit" class="btn btn-secondary" style="min-height: 36px; padding: 0.2rem 0.5rem; font-size: 0.875rem; color: var(--color-error-text);">
+                    Absent
+                  </button>
+                </form>
+
+                <!-- Toggle Completion -->
+                <form action="/trainer/sessions/{{ attendanceData.sessionId }}/completions/{{ item.enrollment_id }}" method="POST">
+                  <button type="submit" class="btn btn-secondary" style="min-height: 36px; padding: 0.2rem 0.5rem; font-size: 0.875rem;">
+                    {{ "Revoke Completion" if item.completed else "Mark Complete" }}
+                  </button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+
+<!-- Announcements Section -->
+<div class="card" style="margin-top: 2.5rem;">
+  <h2>Session Announcements</h2>
+  <p>Post updates or notices directly to participants enrolled in this session.</p>
+
+  <form action="/trainer/sessions/{{ attendanceData.sessionId }}/announcements" method="POST" style="margin-bottom: 2rem;">
+    <div class="form-group">
+      <label for="announcement-body" class="form-label">
+        New Announcement Message
+      </label>
+      <textarea
+        id="announcement-body"
+        name="body"
+        rows="3"
+        class="form-textarea"
+        placeholder="e.g. Please note that today's lab session begins 15 minutes later in Lab 102."
+        required
+      ></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Post Announcement</button>
+  </form>
+
+  {% if announcements.length === 0 %}
+    <p style="color: var(--color-text-muted);">No announcements have been published for this session yet.</p>
+  {% else %}
+    <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem;">
+      {% for a in announcements %}
+        <li style="border-left: 4px solid var(--color-primary); background: var(--color-surface); padding: 1rem; border-radius: var(--border-radius);">
+          <div style="display: flex; justify-content: space-between; margin-bottom: 0.25rem;">
+            <strong>{{ a.author_name }} ({{ a.author_role }})</strong>
+            <small style="color: var(--color-text-muted);">{{ a.created_at | formatDate }}</small>
+          </div>
+          <p style="margin: 0;">{{ a.body }}</p>
+        </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+</div>
+{% endblock %}

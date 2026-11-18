@@ -1,6 +1,7 @@
 import { Router, type Request, type Response } from 'express';
 import { listSessions, getSessionById } from '../services/sessions.js';
 import { enrollLearner, cancelEnrollment } from '../services/enrollment.js';
+import { listAnnouncements } from '../services/announcements.js';
 import { requireRole } from '../middleware/requireRole.js';
 
 export const sessionsRouter = Router();
@@ -22,7 +23,11 @@ sessionsRouter.get('/:id', async (req: Request, res: Response) => {
   const currentUserId = req.currentUser?.id;
   const currentUserRole = req.currentUser?.role;
 
-  const session = await getSessionById(sessionId, currentUserId, currentUserRole);
+  const [session, announcements] = await Promise.all([
+    getSessionById(sessionId, currentUserId, currentUserRole),
+    listAnnouncements(sessionId),
+  ]);
+
   if (!session) {
     res.status(404);
     return res.render('pages/error.njk', {
@@ -36,6 +41,7 @@ sessionsRouter.get('/:id', async (req: Request, res: Response) => {
   res.render('pages/sessions/detail.njk', {
     pageTitle: `${session.course_title} - Workshop House`,
     session,
+    announcements,
   });
 });
 

@@ -14,6 +14,8 @@ import { coordinatorRouter } from './routes/coordinator.js';
 import { sessionsRouter } from './routes/sessions.js';
 import { trainerRouter } from './routes/trainer.js';
 import { learnerRouter } from './routes/learner.js';
+import { preferencesRouter } from './routes/preferences.js';
+import { dashboardRouter } from './routes/dashboard.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -95,6 +97,8 @@ export function createApp(): express.Application {
   app.use('/coordinator', coordinatorRouter);
   app.use('/sessions', sessionsRouter);
   app.use('/trainer', trainerRouter);
+  app.use('/preferences', preferencesRouter);
+  app.use('/dashboard', dashboardRouter);
   app.use('/', learnerRouter);
   app.use('/', homeRouter);
 

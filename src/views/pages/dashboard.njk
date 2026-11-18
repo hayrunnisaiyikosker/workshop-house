@@ -1,0 +1,103 @@
+{% extends "layout.njk" %}
+
+{% block content %}
+<div class="header-container" style="margin-bottom: 1.5rem; justify-content: space-between;">
+  <h1>Workshop Analytics & Performance Dashboard</h1>
+  <div style="display: flex; gap: 0.5rem;">
+    {% if currentUser.role == 'coordinator' %}
+      <a href="/coordinator/sessions/new" class="btn btn-primary">+ New Session</a>
+    {% endif %}
+  </div>
+</div>
+
+<!-- Metrics Overview Cards -->
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin-bottom: 2rem;">
+  <div class="card" style="text-align: center; padding: 1.25rem;">
+    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-muted); font-weight: 600;">COURSES</p>
+    <p style="margin: 0.5rem 0 0 0; font-size: 2rem; font-weight: 700;">{{ metrics.totalCourses }}</p>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.25rem;">
+    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-muted); font-weight: 600;">SESSIONS</p>
+    <p style="margin: 0.5rem 0 0 0; font-size: 2rem; font-weight: 700;">{{ metrics.totalSessions }}</p>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.25rem;">
+    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-muted); font-weight: 600;">ACTIVE ENROLLMENTS</p>
+    <p style="margin: 0.5rem 0 0 0; font-size: 2rem; font-weight: 700; color: var(--color-primary);">{{ metrics.totalActiveEnrollments }}</p>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.25rem;">
+    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-muted); font-weight: 600;">ATTENDED</p>
+    <p style="margin: 0.5rem 0 0 0; font-size: 2rem; font-weight: 700; color: var(--color-success-text);">{{ metrics.totalAttended }}</p>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.25rem;">
+    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-muted); font-weight: 600;">ATTENDANCE RATE</p>
+    <p style="margin: 0.5rem 0 0 0; font-size: 2rem; font-weight: 700; color: var(--color-success-text);">{{ metrics.attendanceRate }}%</p>
+  </div>
+
+  <div class="card" style="text-align: center; padding: 1.25rem;">
+    <p style="margin: 0; font-size: 0.875rem; color: var(--color-text-muted); font-weight: 600;">COMPLETIONS</p>
+    <p style="margin: 0.5rem 0 0 0; font-size: 2rem; font-weight: 700; color: var(--color-primary);">{{ metrics.totalCompletions }}</p>
+  </div>
+</div>
+
+<!-- Sessions Breakdown -->
+<h2>Session Performance Breakdown</h2>
+
+{% if metrics.sessions.length === 0 %}
+  <div class="card">
+    <p>No active workshop sessions available for metrics analysis.</p>
+  </div>
+{% else %}
+  <div class="table-responsive">
+    <table aria-label="Session performance metrics">
+      <thead>
+        <tr>
+          <th scope="col">Course Title</th>
+          <th scope="col">Trainer</th>
+          <th scope="col">Room</th>
+          <th scope="col">Date</th>
+          <th scope="col">Enrolled / Cap</th>
+          <th scope="col">Attended</th>
+          <th scope="col">Completed</th>
+          <th scope="col">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in metrics.sessions %}
+          <tr>
+            <td><strong><a href="/sessions/{{ s.id }}">{{ s.courseTitle }}</a></strong></td>
+            <td>{{ s.trainerName }}</td>
+            <td>{{ s.room }}</td>
+            <td>{{ s.startsAt | formatDate }}</td>
+            <td>{{ s.activeCount }} / {{ s.capacity }}</td>
+            <td>
+              <span style="font-weight: 700; color: var(--color-success-text);">
+                {{ s.attendedCount }}
+              </span>
+            </td>
+            <td>
+              <span style="font-weight: 700; color: var(--color-primary);">
+                {{ s.completionCount }}
+              </span>
+            </td>
+            <td>
+              {% if currentUser.role == 'trainer' or currentUser.role == 'coordinator' %}
+                <a href="/trainer/sessions/{{ s.id }}/attendance" class="btn btn-secondary" style="min-height: 36px; padding: 0.25rem 0.6rem; font-size: 0.875rem;">
+                  Attendance &rarr;
+                </a>
+              {% else %}
+                <a href="/sessions/{{ s.id }}" class="btn btn-secondary" style="min-height: 36px; padding: 0.25rem 0.6rem; font-size: 0.875rem;">
+                  View
+                </a>
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endif %}
+{% endblock %}

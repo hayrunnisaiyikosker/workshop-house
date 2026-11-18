@@ -42,7 +42,17 @@
             <td>{{ e.trainer_name }}</td>
             <td>
               {% if e.status == 'active' %}
-                <code style="font-size: 1.1rem; font-weight: 700; letter-spacing: 1px;">{{ e.checkin_code }}</code>
+                <div style="display: flex; align-items: center; gap: 0.75rem;">
+                  {% if e.qr_svg %}
+                    <div style="width: 52px; height: 52px; flex-shrink: 0;" aria-label="QR Code for check-in code {{ e.checkin_code }}" role="img">
+                      {{ e.qr_svg | safe }}
+                    </div>
+                  {% endif %}
+                  <div>
+                    <code style="font-size: 1.1rem; font-weight: 700; letter-spacing: 1px;">{{ e.checkin_code }}</code>
+                    <small style="display: block; color: var(--color-text-muted);">Text or scan</small>
+                  </div>
+                </div>
               {% else %}
                 <span style="color: var(--color-text-muted);">&mdash;</span>
               {% endif %}

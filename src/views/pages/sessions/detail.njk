@@ -57,6 +57,24 @@
         </p>
       {% endif %}
     </div>
+
+    <!-- Announcements -->
+    {% if announcements and announcements.length > 0 %}
+      <div style="margin-top: 2rem; padding-top: 1rem; border-top: 2px solid var(--color-border);">
+        <h3>Announcements</h3>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;">
+          {% for a in announcements %}
+            <li style="border-left: 3px solid var(--color-primary); background: var(--color-surface); padding: 0.75rem 1rem; border-radius: var(--border-radius);">
+              <div style="display: flex; justify-content: space-between; font-size: 0.875rem; color: var(--color-text-muted);">
+                <strong>{{ a.author_name }}</strong>
+                <span>{{ a.created_at | formatDate }}</span>
+              </div>
+              <p style="margin: 0.25rem 0 0 0;">{{ a.body }}</p>
+            </li>
+          {% endfor %}
+        </ul>
+      </div>
+    {% endif %}
   </div>
 
   <!-- Enrollment Action Box -->

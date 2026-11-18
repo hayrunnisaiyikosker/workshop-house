@@ -9,9 +9,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{{ pageTitle or "Workshop House" }}</title>
   <link rel="stylesheet" href="/css/theme.css" />
+  <script src="/js/shortcuts.js" defer></script>
   {% block head %}{% endblock %}
 </head>
-<body>
+<body data-shortcuts-enabled="{{ 'false' if currentUser and currentUser.preferences and currentUser.preferences.shortcuts_enabled == false else 'true' }}">
   <!-- Skip to main content link (WCAG 2.4.1) -->
   <a href="#main-content" class="skip-link">Skip to main content</a>
 
@@ -26,6 +27,7 @@
           <li><a href="/">Home</a></li>
           <li><a href="/sessions">Workshops</a></li>
           {% if currentUser %}
+            <li><a href="/dashboard">Dashboard</a></li>
             {% if currentUser.role == 'coordinator' %}
               <li><a href="/coordinator/sessions">Manage Sessions</a></li>
               <li><a href="/coordinator/courses">Manage Courses</a></li>
@@ -37,6 +39,11 @@
               <li><a href="/my-sessions">My Sessions</a></li>
             {% endif %}
             <li><a href="/preferences">Preferences</a></li>
+            <li>
+              <button type="button" class="btn btn-secondary nav-btn" onclick="document.getElementById('shortcuts-dialog').showModal()" aria-haspopup="dialog" style="min-height: 36px; padding: 0.25rem 0.5rem; font-size: 0.875rem;">
+                Shortcuts (<kbd>Alt+Shift+H</kbd>)
+              </button>
+            </li>
             <li>
               <span>Signed in as <strong>{{ currentUser.name }}</strong> ({{ currentUser.role }})</span>
             </li>
@@ -73,6 +80,54 @@
   <main id="main-content" class="site-main">
     {% block content %}{% endblock %}
   </main>
+
+  <!-- Keyboard Shortcuts Dialog (WCAG 2.1.4) -->
+  <dialog id="shortcuts-dialog" aria-labelledby="shortcuts-dialog-title" class="modal-dialog" style="max-width: 500px; padding: 1.5rem; border: 2px solid var(--color-border); border-radius: var(--border-radius); background: var(--color-surface); color: var(--color-text);">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; border-bottom: 1px solid var(--color-border); padding-bottom: 0.5rem;">
+      <h2 id="shortcuts-dialog-title" style="margin: 0; font-size: 1.25rem;">Keyboard Shortcuts</h2>
+      <button type="button" class="btn btn-secondary" onclick="document.getElementById('shortcuts-dialog').close()" aria-label="Close shortcuts dialog" style="min-height: 32px; padding: 0.2rem 0.5rem;">
+        &times;
+      </button>
+    </div>
+    <p style="font-size: 0.875rem; color: var(--color-text-muted);">
+      Press the key combinations below to quickly navigate. You can disable shortcuts anytime in <a href="/preferences">Preferences</a>.
+    </p>
+    <ul style="list-style: none; padding: 0; margin: 1rem 0; display: flex; flex-direction: column; gap: 0.75rem;">
+      <li style="display: flex; justify-content: space-between;">
+        <span>Browse Workshops:</span>
+        <kbd style="padding: 0.2rem 0.4rem; background: var(--color-surface-hover); border: 1px solid var(--color-border); border-radius: 4px;">Alt + Shift + S</kbd>
+      </li>
+      <li style="display: flex; justify-content: space-between;">
+        <span>My Enrolled Sessions:</span>
+        <kbd style="padding: 0.2rem 0.4rem; background: var(--color-surface-hover); border: 1px solid var(--color-border); border-radius: 4px;">Alt + Shift + M</kbd>
+      </li>
+      <li style="display: flex; justify-content: space-between;">
+        <span>Trainer Attendance / Sessions:</span>
+        <kbd style="padding: 0.2rem 0.4rem; background: var(--color-surface-hover); border: 1px solid var(--color-border); border-radius: 4px;">Alt + Shift + A</kbd>
+      </li>
+      <li style="display: flex; justify-content: space-between;">
+        <span>Analytics Dashboard:</span>
+        <kbd style="padding: 0.2rem 0.4rem; background: var(--color-surface-hover); border: 1px solid var(--color-border); border-radius: 4px;">Alt + Shift + D</kbd>
+      </li>
+      <li style="display: flex; justify-content: space-between;">
+        <span>Focus Check-in Code Field:</span>
+        <kbd style="padding: 0.2rem 0.4rem; background: var(--color-surface-hover); border: 1px solid var(--color-border); border-radius: 4px;">Alt + Shift + K</kbd>
+      </li>
+      <li style="display: flex; justify-content: space-between;">
+        <span>Open / Close Help Dialog:</span>
+        <kbd style="padding: 0.2rem 0.4rem; background: var(--color-surface-hover); border: 1px solid var(--color-border); border-radius: 4px;">Alt + Shift + H</kbd>
+      </li>
+      <li style="display: flex; justify-content: space-between;">
+        <span>Close Any Modal:</span>
+        <kbd style="padding: 0.2rem 0.4rem; background: var(--color-surface-hover); border: 1px solid var(--color-border); border-radius: 4px;">Esc</kbd>
+      </li>
+    </ul>
+    <div style="text-align: right; margin-top: 1rem;">
+      <button type="button" class="btn btn-primary" onclick="document.getElementById('shortcuts-dialog').close()">
+        Close
+      </button>
+    </div>
+  </dialog>
 
   <!-- Footer landmark (WCAG 1.3.1) -->
   <footer class="site-footer" role="contentinfo">

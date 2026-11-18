@@ -1,9 +1,27 @@
 import crypto from 'node:crypto';
 import { getClient, query } from '../db/pool.js';
 
+/** Alphabet for check-in codes: no I, O, 0, 1 to avoid confusion */
+const CHECKIN_ALPHABET = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+const CHECKIN_CODE_LENGTH = 8;
+
+/**
+ * Generate a cryptographically random 8-character check-in code from an
+ * unambiguous alphabet (no I, O, 0, 1).  Returns upper-case.
+ */
+export function generateCheckinCode(): string {
+  let code = '';
+  for (let i = 0; i < CHECKIN_CODE_LENGTH; i++) {
+    // crypto.randomInt is uniform; alphabet length 32 is a power-of-two, so
+    // no modulo bias.
+    code += CHECKIN_ALPHABET[crypto.randomInt(0, CHECKIN_ALPHABET.length)]!;
+  }
+  return code;
+}
+
 export type EnrollResult =
   | { success: true; enrollmentId: string; reactivated: boolean }
-  | { success: false; reason: 'FULL' | 'ALREADY_ENROLLED' | 'NOT_FOUND'; message: string };
+  | { success: false; reason: 'FULL' | 'ALREADY_ENROLLED' | 'NOT_FOUND' | 'SESSION_STARTED'; message: string };
 
 export type CancelResult =
   | { success: true }
@@ -24,8 +42,11 @@ export interface LearnerEnrollmentItem {
   enrolled_at: Date;
   cancelled_at: Date | null;
   checkin_code: string;
+  /** resource_url is NULL when enrollment is not active (BR-08 fix). */
   resource_url: string | null;
   can_view_resource: boolean;
+  attendance_status: 'attended' | 'absent' | null;
+  completed: boolean;
 }
 
 export async function enrollLearner(sessionId: string, learnerId: string): Promise<EnrollResult> {
@@ -34,8 +55,9 @@ export async function enrollLearner(sessionId: string, learnerId: string): Promi
     await client.query('BEGIN');
 
     // BR-01: Lock the session row to serialize concurrent enrollments
-    const sessionRes = await client.query<{ capacity: number }>(
-      'SELECT capacity FROM sessions WHERE id = $1 FOR UPDATE',
+    // has_started uses DB-side NOW() to avoid JS/pg timezone comparison issues
+    const sessionRes = await client.query<{ capacity: number; has_started: boolean }>(
+      'SELECT capacity, (NOW() >= starts_at) AS has_started FROM sessions WHERE id = $1 FOR UPDATE',
       [sessionId]
     );
 
@@ -43,6 +65,16 @@ export async function enrollLearner(sessionId: string, learnerId: string): Promi
     if (!session) {
       await client.query('ROLLBACK');
       return { success: false, reason: 'NOT_FOUND', message: 'Session not found.' };
+    }
+
+    // FR-07: Refuse enrollment if the session has already started
+    if (session.has_started) {
+      await client.query('ROLLBACK');
+      return {
+        success: false,
+        reason: 'SESSION_STARTED',
+        message: 'This session has already started. Enrollment is no longer possible.',
+      };
     }
 
     // Check if learner already has an enrollment row
@@ -66,7 +98,7 @@ export async function enrollLearner(sessionId: string, learnerId: string): Promi
       "SELECT COUNT(*) AS count FROM enrollments WHERE session_id = $1 AND status = 'active'",
       [sessionId]
     );
-    const activeCount = parseInt(activeCountRes.rows[0]?.count || '0', 10);
+    const activeCount = parseInt(activeCountRes.rows[0]?.count ?? '0', 10);
 
     // Check if session is full
     if (activeCount >= session.capacity) {
@@ -78,11 +110,23 @@ export async function enrollLearner(sessionId: string, learnerId: string): Promi
       };
     }
 
-    // Generate cryptographically random checkin code
-    const checkinCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+    // Generate code with retry on unique collision
+    let checkinCode = '';
+    for (let attempt = 0; attempt < 5; attempt++) {
+      checkinCode = generateCheckinCode();
+      const collision = await client.query<{ id: string }>(
+        'SELECT id FROM enrollments WHERE checkin_code = $1',
+        [checkinCode]
+      );
+      if ((collision.rowCount ?? 0) === 0) break;
+      if (attempt === 4) {
+        await client.query('ROLLBACK');
+        throw new Error('Could not generate a unique check-in code after 5 attempts.');
+      }
+    }
 
     if (existing && existing.status === 'cancelled') {
-      // Re-enrollment: reactivate the old row (no second row)
+      // Re-enrollment: reactivate the old row (no second row) — FR-11
       const updateRes = await client.query<{ id: string }>(
         `UPDATE enrollments 
          SET status = 'active', cancelled_at = NULL, enrolled_at = NOW(), checkin_code = $1
@@ -114,6 +158,22 @@ export async function enrollLearner(sessionId: string, learnerId: string): Promi
 }
 
 export async function cancelEnrollment(sessionId: string, learnerId: string): Promise<CancelResult> {
+  // FR-10: Refuse cancellation if the session has already started (DB-side comparison)
+  const sessionRes = await query<{ has_started: boolean }>(
+    'SELECT (NOW() >= starts_at) AS has_started FROM sessions WHERE id = $1',
+    [sessionId]
+  );
+  const session = sessionRes.rows[0];
+  if (!session) {
+    return { success: false, message: 'Session not found.' };
+  }
+  if (session.has_started) {
+    return {
+      success: false,
+      message: 'This session has already started. Cancellation is no longer possible.',
+    };
+  }
+
   const result = await query(
     `UPDATE enrollments
      SET status = 'cancelled', cancelled_at = NOW()
@@ -148,8 +208,11 @@ export async function listLearnerEnrollments(learnerId: string): Promise<Learner
       e.enrolled_at,
       e.cancelled_at,
       e.checkin_code,
-      s.resource_url,
-      (e.status = 'active' AND s.resource_url IS NOT NULL) AS can_view_resource
+      -- BR-08: resource_url is NULL when enrollment is not active
+      CASE WHEN e.status = 'active' THEN s.resource_url END AS resource_url,
+      (e.status = 'active' AND s.resource_url IS NOT NULL) AS can_view_resource,
+      a.status AS attendance_status,
+      (comp.id IS NOT NULL) AS completed
     FROM enrollments e
     JOIN sessions s ON s.id = e.session_id
     JOIN courses c ON c.id = s.course_id
@@ -158,10 +221,19 @@ export async function listLearnerEnrollments(learnerId: string): Promise<Learner
       SELECT session_id, COUNT(*) AS active_count
       FROM enrollments
       WHERE status = 'active'
+        AND session_id IN (
+          SELECT session_id FROM enrollments WHERE learner_id = $1
+        )
       GROUP BY session_id
     ) e_count ON e_count.session_id = s.id
+    LEFT JOIN attendance a ON a.enrollment_id = e.id
+    LEFT JOIN completions comp ON comp.enrollment_id = e.id
     WHERE e.learner_id = $1
-    ORDER BY s.starts_at ASC
+    ORDER BY
+      -- Upcoming first (soonest), past last (most recent first)
+      CASE WHEN s.starts_at > NOW() THEN 0 ELSE 1 END ASC,
+      CASE WHEN s.starts_at > NOW() THEN s.starts_at END ASC,
+      CASE WHEN s.starts_at <= NOW() THEN s.starts_at END DESC
   `;
 
   const result = await query<LearnerEnrollmentItem>(sql, [learnerId]);

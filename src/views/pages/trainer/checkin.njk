@@ -21,7 +21,7 @@
 
   <div class="card">
     <h2>Scan or Enter Learner Check-in Code</h2>
-    <p>Scan learner's QR code or manually enter their 6-character alphanumeric check-in code.</p>
+    <p>Scan learner's QR code or manually enter their 8-character alphanumeric check-in code.</p>
 
     <form action="/trainer/sessions/{{ session.id }}/checkin" method="POST" novalidate style="margin-top: 1.5rem;">
       <div class="form-group">
@@ -35,7 +35,7 @@
           id="checkin-code-input"
           name="code"
           type="text"
-          placeholder="e.g. A3F82C"
+          placeholder="e.g. A3F82CPQ"
           class="form-input"
           style="font-size: 1.5rem; text-transform: uppercase; letter-spacing: 3px; font-weight: 700; text-align: center; height: 56px;"
           autocomplete="off"
@@ -43,6 +43,8 @@
           required
           aria-required="true"
           aria-describedby="code-hint"
+          maxlength="8"
+          pattern="[A-HJ-NP-Za-hj-np-z2-9]{8}"
         />
       </div>
 

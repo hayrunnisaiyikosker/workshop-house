@@ -59,7 +59,20 @@ export function createApp(): express.Application {
   nunjucksEnv.addFilter('formatDate', (val: unknown) => {
     if (!val) return '';
     const d = val instanceof Date ? val : new Date(String(val));
-    return isNaN(d.getTime()) ? '' : d.toISOString().replace('T', ' ').slice(0, 16);
+    if (isNaN(d.getTime())) return '';
+    // Display in configured timezone (APP_TIMEZONE, default Europe/Istanbul)
+    try {
+      return d.toLocaleString('sv-SE', {
+        timeZone: env.APP_TIMEZONE,
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+      }).replace('T', ' ').slice(0, 16);
+    } catch {
+      return d.toISOString().replace('T', ' ').slice(0, 16);
+    }
   });
 
   nunjucksEnv.addFilter('truncate', (val: unknown, len: number, killwords: boolean, end: string) => {

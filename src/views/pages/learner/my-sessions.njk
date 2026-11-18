@@ -21,7 +21,7 @@
         <tr>
           <th scope="col">Course Title</th>
           <th scope="col">Status</th>
-          <th scope="col">Schedule & Room</th>
+          <th scope="col">Schedule &amp; Room</th>
           <th scope="col">Trainer</th>
           <th scope="col">Check-in Code</th>
           <th scope="col">Materials</th>
@@ -34,7 +34,24 @@
             <td>
               <strong><a href="/sessions/{{ e.session_id }}">{{ e.course_title }}</a></strong>
             </td>
-            <td>{{ badges.badge(e.status) }}</td>
+            <td>
+              {# Show the most granular status: completed > attended/absent > enrolled/cancelled #}
+              {% if e.completed %}
+                <span class="badge badge-success" aria-label="Completed">
+                  <span aria-hidden="true">&#10003;</span> Completed
+                </span>
+              {% elseif e.attendance_status == 'attended' %}
+                <span class="badge badge-success" aria-label="Attended">
+                  <span aria-hidden="true">&#10003;</span> Attended
+                </span>
+              {% elseif e.attendance_status == 'absent' %}
+                <span class="badge badge-error" aria-label="Absent">
+                  <span aria-hidden="true">&#10007;</span> Absent
+                </span>
+              {% else %}
+                {{ badges.badge(e.status) }}
+              {% endif %}
+            </td>
             <td>
               <div>{{ e.starts_at | formatDate }}</div>
               <small style="color: var(--color-text-muted);">{{ e.room }}</small>

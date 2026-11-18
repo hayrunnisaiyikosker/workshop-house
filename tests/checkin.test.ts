@@ -229,7 +229,7 @@ describe('Phase 3: QR & Code Check-in Verification', () => {
 
     await query(
       `INSERT INTO enrollments (session_id, learner_id, status, checkin_code)
-       VALUES ($1, $2, 'active', 'TERM99')`,
+       VALUES ($1, $2, 'active', 'TERM9988')`,
       [termSessionId, learnerRes.rows[0]!.id]
     );
 
@@ -241,7 +241,7 @@ describe('Phase 3: QR & Code Check-in Verification', () => {
     // Submit code
     const postRes = await aliceTrainerAgent
       .post(`/trainer/sessions/${termSessionId}/checkin`)
-      .send({ code: 'TERM99' });
+      .send({ code: 'TERM9988' });
 
     expect(postRes.status).toBe(302);
     expect(postRes.header.location).toBe(`/trainer/sessions/${termSessionId}/checkin`);
@@ -250,7 +250,7 @@ describe('Phase 3: QR & Code Check-in Verification', () => {
     const checkAtt = await query<{ status: string }>(
       `SELECT a.status FROM attendance a
        JOIN enrollments e ON e.id = a.enrollment_id
-       WHERE e.checkin_code = 'TERM99'`
+       WHERE e.checkin_code = 'TERM9988'`
     );
     expect(checkAtt.rows[0]!.status).toBe('attended');
   });

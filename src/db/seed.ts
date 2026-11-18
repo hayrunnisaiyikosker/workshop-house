@@ -1,9 +1,9 @@
-import crypto from 'node:crypto';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import argon2 from 'argon2';
 import { pool } from './pool.js';
 import { runMigrations } from './migrate.js';
+import { generateCheckinCode } from '../services/enrollment.js';
 
 export async function seed(): Promise<void> {
   console.log('Running migrations prior to seeding...');
@@ -181,7 +181,7 @@ export async function seed(): Promise<void> {
     const upcomingSessionId = upcomingSessionRes.rows[0]!.id;
 
     // Helper for random checkin code
-    const makeCode = () => crypto.randomBytes(3).toString('hex').toUpperCase();
+    const makeCode = () => generateCheckinCode();
 
     // 4. Enrollments
     // Past session: Charlie (active, attended), Diana (active, completed)

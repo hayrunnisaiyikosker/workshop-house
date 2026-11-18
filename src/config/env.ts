@@ -11,6 +11,7 @@ const envSchema = z.object({
     (url) => url.startsWith('postgresql://') || url.startsWith('postgres://'),
     'DATABASE_URL must be a valid PostgreSQL connection string starting with postgresql:// or postgres://'
   ),
+  APP_TIMEZONE: z.string().default('Europe/Istanbul'),
 });
 
 const parsed = envSchema.safeParse(process.env);

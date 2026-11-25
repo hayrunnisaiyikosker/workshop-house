@@ -1,0 +1,611 @@
+<!DOCTYPE html><html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Workshop House — Cozy Community</title>
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">/** @type {import('tailwindcss').Config} */
+globalThis.tailwind = globalThis.tailwind || {};
+globalThis.tailwind.config = {
+  darkMode: 'class',
+  theme: {
+    extend: {
+      colors: {
+        'cream': '#FDFAF5',
+        'peach-pink': '#F6C8C0',
+        'butter-yellow': '#F4D96B',
+        'soft-sage': '#BFD9C2',
+        'powder-blue': '#C6D9EF',
+        'lilac': '#D6BDE8',
+        'warm-brown': '#3F2E1E',
+        'terracotta': '#B8441F',
+        'light-primary': '#B8441F',
+        'light-on-primary': '#FFFFFF',
+        'light-primary-container': '#9E3716',
+        'light-on-primary-container': '#FFFFFF',
+        'light-secondary': '#3F2E1E',
+        'light-on-secondary': '#FDFAF5',
+        'light-surface': '#FDFAF5',
+        'light-surface-container-lowest': '#FFFFFF',
+        'light-surface-container-low': '#F8F2EA',
+        'light-surface-container': '#F2EAE0',
+        'light-surface-container-high': '#EBE1D5',
+        'light-on-surface': '#3F2E1E',
+        'light-on-surface-variant': '#5C4735',
+        'light-outline': '#7E6957',
+        'light-outline-variant': '#E4D8CA',
+        'dark-primary': '#F4D96B',
+        'dark-on-primary': '#3F2E1E',
+        'dark-surface': '#231D18',
+        'dark-on-surface': '#FDFAF5',
+        'dark-on-surface-variant': '#E4D8CA',
+      },
+      borderRadius: {
+        'none': '0px',
+        'sm': '4px',
+        'DEFAULT': '8px',
+        'md': '12px',
+        'lg': '16px',
+        'full': '9999px',
+      },
+      spacing: {
+        'gutter-xs': '4px',
+        'gutter-sm': '8px',
+        'gutter-md': '16px',
+        'gutter-lg': '24px',
+        'gutter-xl': '32px',
+        'section': '64px',
+        'page-margin': '32px',
+      },
+      fontFamily: {
+        'display': ['"Fraunces"', 'sans-serif'],
+        'headline': ['"Fraunces"', 'sans-serif'],
+        'title': ['"DM Sans"', 'sans-serif'],
+        'body': ['"DM Sans"', 'sans-serif'],
+        'label': ['"DM Mono"', 'sans-serif'],
+      },
+      fontSize: {
+        'display-lg': ['56px', { lineHeight: '62px', letterSpacing: '-1px', fontWeight: '600' }],
+        'display-lg-mobile': ['32px', { lineHeight: '36px', letterSpacing: '-0.5px', fontWeight: '600' }],
+        'headline-lg': ['36px', { lineHeight: '42px', letterSpacing: '-0.5px', fontWeight: '600' }],
+        'headline-lg-mobile': ['26px', { lineHeight: '32px', letterSpacing: '-0.25px', fontWeight: '600' }],
+        'headline-md': ['24px', { lineHeight: '30px', letterSpacing: '-0.25px', fontWeight: '600' }],
+        'headline-sm': ['20px', { lineHeight: '26px', letterSpacing: '0px', fontWeight: '600' }],
+        'title-lg': ['18px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '700' }],
+        'title-md': ['16px', { lineHeight: '22px', letterSpacing: '0px', fontWeight: '700' }],
+        'body-lg': ['18px', { lineHeight: '28px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-md': ['15px', { lineHeight: '24px', letterSpacing: '0px', fontWeight: '400' }],
+        'body-sm': ['13px', { lineHeight: '20px', letterSpacing: '0px', fontWeight: '400' }],
+        'label-lg': ['14px', { lineHeight: '18px', letterSpacing: '0px', fontWeight: '700' }],
+        'label-sm': ['12px', { lineHeight: '16px', letterSpacing: '0.25px', fontWeight: '500' }],
+      },
+      transitionDuration: {
+        'state-change': '150ms',
+      },
+      transitionDelay: {
+        'state-change': '0ms',
+      },
+      transitionTimingFunction: {
+        'state-change': 'ease-out',
+      },
+    },
+  },
+};
+if (typeof module !== 'undefined') module.exports = globalThis.tailwind.config;
+</script>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&amp;family=DM+Sans:ital,wght@0,400;0,500;0,700;1,400&amp;family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500;1,9..144,600&amp;display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=block" rel="stylesheet">
+  <style>
+    .material-symbols-outlined {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      line-height: 1 !important;
+      box-sizing: content-box;
+      overflow: hidden;
+      white-space: nowrap;
+      direction: ltr;
+      vertical-align: middle;
+    }
+  </style>
+</head>
+<body class="bg-cream text-warm-brown font-body antialiased selection:bg-butter-yellow selection:text-warm-brown">
+  <div class="min-h-[1024px] flex flex-col" data-stitch-vh="min-h-[1024px]===min-h-screen">
+
+    <!-- Grounded Studio Header -->
+    <header class="sticky top-0 z-30 bg-cream border-b border-light-outline-variant">
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-8 h-20 flex items-center justify-between gap-6">
+        <a href="#top" class="inline-flex items-center gap-3 text-warm-brown focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-light-primary">
+          <svg width="32" height="32" viewBox="0 0 34 34" fill="none" aria-hidden="true" class="shrink-0">
+            <path d="M5 15.5L17 5L29 15.5V28C29 29.1 28.1 30 27 30H7C5.9 30 5 29.1 5 28V15.5Z" fill="#F4D96B" stroke="#3F2E1E" stroke-width="1.75" stroke-linejoin="round"></path>
+            <path d="M13 30V21C13 19.3 14.3 18 16 18H18C19.7 18 21 19.3 21 21V30" fill="#F6C8C0" stroke="#3F2E1E" stroke-width="1.75"></path>
+          </svg>
+          <span data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown tracking-tight">Workshop House</span>
+        </a>
+
+        <nav aria-label="Primary navigation" class="hidden md:flex items-center gap-8">
+          <a href="#workshops" data-design-text-token="body-md" class="font-body text-body-md text-warm-brown hover:text-light-primary transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-light-primary">Workshops</a>
+          <a href="#community" data-design-text-token="body-md" class="font-body text-body-md text-light-on-surface-variant hover:text-light-primary transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-light-primary">Community</a>
+          <a href="#roles" data-design-text-token="body-md" class="font-body text-body-md text-light-on-surface-variant hover:text-light-primary transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-light-primary">About</a>
+        </nav>
+
+        <div class="flex items-center gap-3">
+          <a href="#top" class="inline-flex items-center justify-center px-4 py-2 rounded border border-warm-brown text-warm-brown font-body text-label-lg font-medium hover:bg-light-surface-container-low transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">
+            <span data-design-text-token="label-lg">Sign In</span>
+          </a>
+          <a href="#top" class="hidden sm:inline-flex items-center justify-center px-5 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">
+            <span data-design-text-token="label-lg">Sign Up</span>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="top" class="flex-1">
+
+      <!-- Distinctive Hero: Editorial Copy + Arch-Framed Studio Feature -->
+      <section class="max-w-[1280px] mx-auto px-6 lg:px-8 pt-12 pb-16 lg:pt-16 lg:pb-20">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-center">
+
+          <!-- Left 6 Columns -->
+          <div class="lg:col-span-6 flex flex-col gap-6">
+            <div class="flex items-center gap-3">
+              <span class="w-2.5 h-2.5 rounded-full bg-butter-yellow border border-warm-brown shrink-0" aria-hidden="true"></span>
+              <span data-design-text-token="body-sm" class="font-body text-body-sm font-medium text-warm-brown uppercase tracking-wider">Neighborhood Studios · Brooklyn, Portland &amp; Seattle</span>
+            </div>
+
+            <h1 data-design-text-token="display-lg" class="font-headline text-display-lg-mobile lg:text-display-lg text-warm-brown text-balance">
+              Learn a craft <span class="italic">by doing</span>, together.
+            </h1>
+
+            <p data-design-text-token="body-lg" class="font-body text-body-lg text-light-on-surface-variant max-w-prose text-pretty">
+              Small-group workshops in pottery, woodworking, painting, and analog photography—hosted inside real working studios with all materials ready at the bench.
+            </p>
+
+            <div class="flex flex-wrap items-center gap-4 pt-1">
+              <a href="#workshops" class="inline-flex items-center justify-center gap-2 bg-light-primary text-light-on-primary px-6 py-3 rounded font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">
+                <span data-design-text-token="label-lg">Browse Workshops</span>
+                <span class="material-symbols-outlined text-title-md" aria-hidden="true">arrow_forward</span>
+              </a>
+            </div>
+
+            <!-- Search Bar Integrated as Studio Desk Input -->
+            <form id="cozy-search-form" role="search" class="mt-1 flex items-center bg-light-surface-container-lowest border border-warm-brown rounded p-1.5 gap-2 max-w-lg focus-within:ring-2 focus-within:ring-peach-pink">
+              <span class="material-symbols-outlined text-title-lg text-warm-brown pl-2" aria-hidden="true">search</span>
+              <input id="cozy-search-input" type="search" aria-label="Search workshops by craft or neighborhood" placeholder="Search pottery, walnut, gouache, Brooklyn..." class="flex-1 bg-transparent border-0 text-warm-brown placeholder:text-light-on-surface-variant font-body text-body-sm focus:ring-0 py-1.5 px-1">
+              <button type="submit" class="px-4 py-2 rounded-sm bg-light-surface-container border border-warm-brown text-warm-brown font-body text-label-lg font-medium hover:bg-butter-yellow transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">Find</button>
+            </form>
+          </div>
+
+          <!-- Right 6 Columns: Arch-Framed Studio Feature with Bench Note -->
+          <div class="lg:col-span-6 relative">
+            <div class="hidden sm:block absolute top-5 right-0 w-10/12 h-5/6 bg-peach-pink rounded-t-full rounded-b-md border border-warm-brown" aria-hidden="true"></div>
+            <figure class="relative mx-auto sm:mr-6 w-full sm:w-10/12 flex flex-col gap-3">
+              <div class="aspect-[4/4.2] overflow-hidden rounded-t-full rounded-b-md border border-warm-brown bg-light-surface-container">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrApUyDw7MvoJnJjmYW1oSvD3G6arGvjSqRrFRQeTB3SVzZ-R0QNBtj3aJIKV8pTYB298j9TyAdNrIu0jLclP9T0Vm4VXXSmvFA4b18G2eNjXYV7BlcIvzAuppt7g0z8Tk_6yAunudNWhVWSr7AQgDHffMofOr-ed0y2a2Qut_w_Phdtjh8JgqifZ5gjKbE3EJpixeczuvkcl5VZLvSCPaz4Pl_QHoC-6EGDbI6iF5suwL7HYxTM" alt="Ceramicist shaping wet stoneware clay on a wheel inside a sunlit studio" class="w-full h-full object-cover">
+              </div>
+              <figcaption class="flex items-center justify-between gap-4 bg-light-surface-container-lowest border border-warm-brown rounded px-4 py-2.5">
+                <span data-design-text-token="body-sm" class="font-body text-body-sm font-medium text-warm-brown">Saturday wheel-throwing at Red Hook Kiln</span>
+                <span data-design-text-token="body-sm" class="font-body text-body-sm font-medium text-light-primary uppercase shrink-0">6–10 MAKERS</span>
+              </figcaption>
+            </figure>
+          </div>
+
+        </div>
+      </section>
+
+      <!-- Craft Bridge Strip (Transitional Band) -->
+      <div class="bg-light-surface-container border-y border-light-outline-variant py-4">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-8 flex flex-wrap items-center justify-between gap-4">
+          <span data-design-text-token="label-sm" class="text-label-sm text-light-on-surface-variant uppercase tracking-wider">THIS MONTH AT THE BENCH</span>
+          <div class="flex flex-wrap items-center gap-6 font-body text-body-sm text-warm-brown">
+            <button type="button" data-cozy-filter="pottery" class="inline-flex items-center gap-2 hover:text-light-primary transition-colors duration-state-change">
+              <span class="w-2 h-2 rounded-full bg-peach-pink border border-warm-brown" aria-hidden="true"></span>
+              Pottery &amp; Ceramics
+            </button>
+            <button type="button" data-cozy-filter="woodworking" class="inline-flex items-center gap-2 hover:text-light-primary transition-colors duration-state-change">
+              <span class="w-2 h-2 rounded-full bg-butter-yellow border border-warm-brown" aria-hidden="true"></span>
+              Woodworking
+            </button>
+            <button type="button" data-cozy-filter="painting" class="inline-flex items-center gap-2 hover:text-light-primary transition-colors duration-state-change">
+              <span class="w-2 h-2 rounded-full bg-soft-sage border border-warm-brown" aria-hidden="true"></span>
+              Painting &amp; Gouache
+            </button>
+            <button type="button" data-cozy-filter="photography" class="inline-flex items-center gap-2 hover:text-light-primary transition-colors duration-state-change">
+              <span class="w-2 h-2 rounded-full bg-powder-blue border border-warm-brown" aria-hidden="true"></span>
+              Analog Photography
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Featured Workshops: Larger Two-Column Featured Card + Smaller Cards -->
+      <section id="workshops" class="max-w-[1280px] mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col gap-10">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div class="flex flex-col gap-2">
+            <span data-design-text-token="label-lg" class="text-label-lg font-medium text-light-primary uppercase tracking-wider">Explore upcoming sessions</span>
+            <h2 data-design-text-token="headline-lg" class="font-headline text-headline-lg-mobile lg:text-headline-lg text-warm-brown">
+              Save a seat at the worktable
+            </h2>
+          </div>
+
+          <div class="flex flex-wrap items-center gap-2.5" role="group" aria-label="Filter workshops by category">
+            <button type="button" data-cozy-filter="all" class="px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">All</button>
+            <button type="button" data-cozy-filter="pottery" class="px-4 py-2 rounded border border-warm-brown bg-light-surface-container-lowest text-warm-brown font-body text-label-lg font-medium hover:bg-light-surface-container-low focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">Pottery</button>
+            <button type="button" data-cozy-filter="woodworking" class="px-4 py-2 rounded border border-warm-brown bg-light-surface-container-lowest text-warm-brown font-body text-label-lg font-medium hover:bg-light-surface-container-low focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">Woodworking</button>
+            <button type="button" data-cozy-filter="painting" class="px-4 py-2 rounded border border-warm-brown bg-light-surface-container-lowest text-warm-brown font-body text-label-lg font-medium hover:bg-light-surface-container-low focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">Painting</button>
+            <button type="button" data-cozy-filter="photography" class="px-4 py-2 rounded border border-warm-brown bg-light-surface-container-lowest text-warm-brown font-body text-label-lg font-medium hover:bg-light-surface-container-low focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">Photography</button>
+          </div>
+        </div>
+
+        <!-- Larger Featured Card (Spanning Two Columns) -->
+        <article data-cozy-card data-category="pottery" class="grid grid-cols-1 lg:grid-cols-12 bg-light-surface-container-lowest border border-warm-brown rounded overflow-hidden">
+          <div class="lg:col-span-6 aspect-[16/10] lg:aspect-auto border-b lg:border-b-0 lg:border-r border-warm-brown bg-light-surface-container overflow-hidden">
+            <img src="https://lh3.googleusercontent.com/aida/ALJJyrAW43cDN-SiiNRa6X2m7zm5PsAXQNM1_5oCa6_fXCoVvXR0ILX84SCqOR5_scBctleq9kbik09nh-kx34zoHOp2woWk9RBM9EomPofHP45lOWMgp8WjxeZQ5prvIqpkrShQu4jEIXGsIME_AXhfehVudGsLE43aK_MHfnCsDYMiMjzunQ0-D_v-FJjEoTO0K5pJspwLNnjvSyqhL-NALWzCVuisTP6G6_zGAi8ehwVlvlQVo5r0vvk_IyA" alt="Wheel-thrown stoneware bowls drying on an oak table" class="w-full h-full object-cover">
+          </div>
+          <div class="lg:col-span-6 p-6 lg:p-8 flex flex-col justify-between gap-6">
+            <div class="flex flex-col gap-3">
+              <div class="flex flex-wrap items-center justify-between gap-3">
+                <span class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-butter-yellow border border-warm-brown font-body text-body-sm font-medium text-warm-brown">
+                  Next up · Ceramics
+                </span>
+                <span data-design-text-token="body-sm" class="inline-flex items-center gap-1.5 font-body text-body-sm font-medium text-warm-brown tabular-nums">
+                  <span class="material-symbols-outlined text-title-md text-light-primary" aria-hidden="true">event_seat</span>
+                  5 seats left
+                </span>
+              </div>
+              <h3 data-design-text-token="headline-lg" class="font-headline text-headline-lg-mobile lg:text-headline-lg text-warm-brown">Wheel-Thrown Bowls</h3>
+              <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown text-pretty">
+                Center clay, pull walls, and trim two everyday bowls from speckled stoneware. Kiln firing and ash glaze included.
+              </p>
+              <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 font-body text-body-sm font-medium text-warm-brown">
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-title-md text-light-primary" aria-hidden="true">calendar_today</span>
+                  Sat, Dec 5 · 10:00 AM
+                </span>
+                <span class="inline-flex items-center gap-1.5">
+                  <span class="material-symbols-outlined text-title-md text-light-primary" aria-hidden="true">location_on</span>
+                  Red Hook Kiln, Brooklyn
+                </span>
+              </div>
+            </div>
+
+            <div class="pt-4 border-t border-light-outline-variant flex flex-wrap items-center justify-between gap-4">
+              <div class="flex items-center gap-3">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrAXIPnJnLpAicE74hlFdEGyxqQ8WtW_cW7o-jb0OSUHN5HPz3PwU3NbFjTxbPkt3sRI93ILQWRegZOOjLePzl0gJDixX1uCMImTlA_mZQvR-zSGUCVgH6pkWq_-W4nw_GJXmgsFws1eB8GvI0p6Uhug1R_2sE_pfdZo0n_Uy_bhdcpFkEhJxOchnLQy6y996wL3wbcZCpeC7eUEgXNuPyfgZK41rSCickKt4pXLhOZ5tdCNwGLZDVjo" alt="Elena Vance" class="w-9 h-9 rounded-full object-cover border border-warm-brown">
+                <span data-design-text-token="body-sm" class="font-body text-body-sm font-medium text-warm-brown">Elena Vance · $115</span>
+              </div>
+              <button type="button" data-cozy-detail class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">
+                <span data-design-text-token="label-lg">Reserve your seat</span>
+                <span class="material-symbols-outlined text-title-md" aria-hidden="true">arrow_forward</span>
+              </button>
+            </div>
+          </div>
+        </article>
+
+        <!-- Smaller Session Cards -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch">
+
+          <!-- Card 2: Woodworking -->
+          <article data-cozy-card data-category="woodworking" class="bg-light-surface-container-lowest border border-warm-brown rounded overflow-hidden flex flex-col justify-between">
+            <div>
+              <div class="aspect-[16/10] w-full overflow-hidden border-b border-warm-brown bg-light-surface-container">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrBn8rVvxVxHY4YouEGHvXX9UEjMLvSAQlxOg8C96X52dPu8YoeifWAyP_yuU_Jx0-AF_aAAxCqbvahUV17T9QGSYgMVPCZIb-sd28dAS3an5EDD0MhRUU97d3m_LTLvHeziKNESqkCKpni9q499g36u8F0o7eCoQK4rB1WmzkvYVYsKf1vvw_i7riDOQ-T6-ksLeLnHBcQggKu3BIURgmy9n5W-A_N27Fob8WILtYayrWKLGGCKw3i0lGE8eAk7Zg" alt="Craftsperson hand-planing walnut at a timber bench" class="w-full h-full object-cover">
+              </div>
+              <div class="p-5 flex flex-col gap-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <span data-design-text-token="body-sm" class="inline-flex items-center gap-2 font-body text-body-sm font-medium text-warm-brown">
+                    <span class="w-2.5 h-2.5 rounded-full bg-butter-yellow border border-warm-brown" aria-hidden="true"></span>
+                    Woodworking
+                  </span>
+                  <span data-design-text-token="body-sm" class="inline-flex items-center gap-1 font-body text-body-sm font-medium text-warm-brown tabular-nums">
+                    <span class="material-symbols-outlined text-title-md text-light-primary" aria-hidden="true">event_seat</span>
+                    4 seats left
+                  </span>
+                </div>
+                <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Walnut Serving Board</h3>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-warm-brown">
+                  Sun, Dec 6 · 10:00 AM · Ballard Mill, Seattle
+                </p>
+              </div>
+            </div>
+            <div class="px-5 py-3.5 bg-light-surface-container-low border-t border-light-outline-variant flex items-center justify-between gap-3">
+              <span data-design-text-token="body-sm" class="font-body text-body-sm font-medium text-warm-brown">Marcus Lindqvist · $140</span>
+              <button type="button" data-cozy-detail class="whitespace-nowrap shrink-0 px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change">
+                <span data-design-text-token="label-lg">View details</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- Card 3: Painting -->
+          <article data-cozy-card data-category="painting" class="bg-light-surface-container-lowest border border-warm-brown rounded overflow-hidden flex flex-col justify-between">
+            <div>
+              <div class="aspect-[16/10] w-full overflow-hidden border-b border-warm-brown bg-light-surface-container">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrBl0Ijlu913QQhrBM7xfUrGbQTQ6aZpwGFu6grELC5Zg3Fana6CRpu9ssr2IpSv9zC5dANx3Q-sccVFjc3z0CEzBaWa44yJNiaxpg5GIyN5jyPkmk3Ts1QoTWxcD-Ao6oO1KDL26aKFZgpY1XIbf1IB-tgG29_O0VNoS-lORlHlburSUjX_HomXGGA_6MDRYlDV4IO0-_iyc2Rr65_Zu0Ga--J3Qnk8xVEcYNk9bj3qySiKmAIN2HUVDH2L6A" alt="Botanical gouache sketchbook" class="w-full h-full object-cover">
+              </div>
+              <div class="p-5 flex flex-col gap-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <span data-design-text-token="body-sm" class="inline-flex items-center gap-2 font-body text-body-sm font-medium text-warm-brown">
+                    <span class="w-2.5 h-2.5 rounded-full bg-soft-sage border border-warm-brown" aria-hidden="true"></span>
+                    Painting
+                  </span>
+                  <span data-design-text-token="body-sm" class="inline-flex items-center gap-1 font-body text-body-sm font-medium text-warm-brown tabular-nums">
+                    <span class="material-symbols-outlined text-title-md text-light-primary" aria-hidden="true">event_seat</span>
+                    6 seats left
+                  </span>
+                </div>
+                <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Botanical Gouache</h3>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-warm-brown">
+                  Sat, Dec 12 · 9:30 AM · Sunlit Loft, Portland
+                </p>
+              </div>
+            </div>
+            <div class="px-5 py-3.5 bg-light-surface-container-low border-t border-light-outline-variant flex items-center justify-between gap-3">
+              <span data-design-text-token="body-sm" class="font-body text-body-sm font-medium text-warm-brown">Claire Beaumont · $95</span>
+              <button type="button" data-cozy-detail class="whitespace-nowrap shrink-0 px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change">
+                <span data-design-text-token="label-lg">View details</span>
+              </button>
+            </div>
+          </article>
+
+          <!-- Card 4: Photography -->
+          <article data-cozy-card data-category="photography" class="bg-light-surface-container-lowest border border-warm-brown rounded overflow-hidden flex flex-col justify-between">
+            <div>
+              <div class="aspect-[16/10] w-full overflow-hidden border-b border-warm-brown bg-light-surface-container">
+                <img src="https://lh3.googleusercontent.com/aida/ALJJyrABPOeC1AOIYM8ZuwV-B0U5hxKwJjAa8r7pBIcynqSJTlZNR7dGX0uuTNPryV3Zcqk86stu9843vXLlkLYQqOl6vUl1-kG3uauS2CPwrMNudgEYN0hz7spcOBK04fznziS8JM9uvkVWECvym2_NQyhUsG7WnKkGdElRB7gWLIfQSFvEusEBRrkc6BcUzRpP-Jwm1mrTOXXL95xUnIzA7pWI9nf-Z4QpK6GGkma91K2UAwzRoamXkg8zZcogxndLvA" alt="Medium format darkroom printing" class="w-full h-full object-cover">
+              </div>
+              <div class="p-5 flex flex-col gap-2.5">
+                <div class="flex items-center justify-between gap-2">
+                  <span data-design-text-token="body-sm" class="inline-flex items-center gap-2 font-body text-body-sm font-medium text-warm-brown">
+                    <span class="w-2.5 h-2.5 rounded-full bg-powder-blue border border-warm-brown" aria-hidden="true"></span>
+                    Photography
+                  </span>
+                  <span data-design-text-token="body-sm" class="inline-flex items-center gap-1 font-body text-body-sm font-medium text-warm-brown tabular-nums">
+                    <span class="material-symbols-outlined text-title-md text-light-primary" aria-hidden="true">event_seat</span>
+                    3 seats left
+                  </span>
+                </div>
+                <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Darkroom Printing</h3>
+                <p data-design-text-token="body-sm" class="font-body text-body-sm text-warm-brown">
+                  Sun, Dec 13 · 1:00 PM · Silver Halide Lab, Seattle
+                </p>
+              </div>
+            </div>
+            <div class="px-5 py-3.5 bg-light-surface-container-low border-t border-light-outline-variant flex items-center justify-between gap-3">
+              <span data-design-text-token="body-sm" class="font-body text-body-sm font-medium text-warm-brown">Kenji Sato · $130</span>
+              <button type="button" data-cozy-detail class="whitespace-nowrap shrink-0 px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change">
+                <span data-design-text-token="label-lg">View details</span>
+              </button>
+            </div>
+          </article>
+
+        </div>
+      </section>
+
+      <!-- Community Section: Asymmetrical 5/7 Story + Makers List -->
+      <section id="community" class="bg-light-surface-container-low border-y border-light-outline-variant py-16 lg:py-20">
+        <div class="max-w-[1280px] mx-auto px-6 lg:px-8 grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-14 items-start">
+
+          <!-- Left 5 Columns: Community Narrative + Worktable Photo -->
+          <div class="lg:col-span-5 flex flex-col gap-5">
+            <span data-design-text-token="label-sm" class="text-label-sm text-light-primary uppercase tracking-wider">THE COMMUNITY</span>
+            <h2 data-design-text-token="headline-lg" class="font-headline text-headline-lg-mobile lg:text-headline-lg text-warm-brown text-balance">
+              A shared table for learning real skills
+            </h2>
+            <p data-design-text-token="body-md" class="font-body text-body-md text-light-on-surface-variant text-pretty">
+              Workshop House brings neighbors together in working studios to share ideas, practice hands-on craft, and slow down for an afternoon.
+            </p>
+            <div class="aspect-[4/3] w-full overflow-hidden rounded-md border border-warm-brown bg-cream mt-1">
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrCCQ2wXkHepiYe6NrBRndCth3TFOMl73_pnSkAKOdjH3Wk6AfBcgzZIND4cAcoTbUQSU0krSDNh4OkPvqxc0axqbyEuLrDQO-ukHWhXrFL6tews2xTZAs_EzidIDKDf09zsQtPdTcpiOjJfjGRUuKWykf32sd0UsosRkR_x_G1u20NIFQ9HeeDwr9Rtuv39gMdH542qMSDIymQ3fxOtel9XH16-Zk3LFXlsakGMYWuNWW3NQ6U1FoHxqNkGZqloWoM" alt="Handbound journals, natural yarn skeins, and botanical specimens on a studio table" class="w-full h-full object-cover">
+            </div>
+          </div>
+
+          <!-- Right 7 Columns: Clean Vertical Maker Roster -->
+          <div class="lg:col-span-7 flex flex-col divide-y divide-light-outline-variant border-t border-b border-light-outline-variant bg-light-surface-container-lowest rounded border-x px-6">
+
+            <article class="py-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrAXIPnJnLpAicE74hlFdEGyxqQ8WtW_cW7o-jb0OSUHN5HPz3PwU3NbFjTxbPkt3sRI93ILQWRegZOOjLePzl0gJDixX1uCMImTlA_mZQvR-zSGUCVgH6pkWq_-W4nw_GJXmgsFws1eB8GvI0p6Uhug1R_2sE_pfdZo0n_Uy_bhdcpFkEhJxOchnLQy6y996wL3wbcZCpeC7eUEgXNuPyfgZK41rSCickKt4pXLhOZ5tdCNwGLZDVjo" alt="Elena Vance" class="w-20 h-20 rounded-full object-cover border border-warm-brown shrink-0">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2.5">
+                  <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Elena Vance</h3>
+                  <span class="w-2.5 h-2.5 rounded-full bg-peach-pink border border-warm-brown" aria-hidden="true"></span>
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant">Pottery · Red Hook Kiln</span>
+                </div>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown text-pretty">
+                  “There’s always warm tea on the shelf and zero pressure to make anything ‘perfect’ on your first spin.”
+                </p>
+              </div>
+            </article>
+
+            <article class="py-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrCKvSZ5i08QyI_LpopzieWPHkP9kogOMrloFCp-MxyFX4eApDisxqFZ_60fPEgIg46zlPpeJHz8mPqNlVtTin1l_yBPA0yWlhU02qR_91OjMai_3M2qAX67fKur8h8zxvwmYwx6YU6jldUZsSksxNH3g96ZbiZItvDgekF9IQ8T-rZq-uDRvGjVPqePvVn8lyDIIkDaHm_o_dl9iNrUDkwhA7VuDbuU3I3HtzHBlTXXNNRAuvMVW6hrrA" alt="Marcus Lindqvist" class="w-20 h-20 rounded-full object-cover border border-warm-brown shrink-0">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2.5">
+                  <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Marcus Lindqvist</h3>
+                  <span class="w-2.5 h-2.5 rounded-full bg-butter-yellow border border-warm-brown" aria-hidden="true"></span>
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant">Woodworking · Ballard Mill</span>
+                </div>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown text-pretty">
+                  “Hand tools slow the room down so you can actually hear the grain and leave with something built to last.”
+                </p>
+              </div>
+            </article>
+
+            <article class="py-6 flex flex-col sm:flex-row items-start sm:items-center gap-5">
+              <img src="https://lh3.googleusercontent.com/aida/ALJJyrA5G8zpEVYeGysWnxv9WRiRe2hh--IN2BqwHenVeT52mzqoClySj2w7YbLwahSZex6pWBgXiarMCi8-ILDkX9lTZ3rdDw7719AF2wZN4QEsy5--36EgwM7xiQS6HJhQyGy9a75mI-w-fdKV-F-NWzO3tuGv7KaCsy6dqRcnL5Y6GyIlOP4F_neGHg7F7i06Twjn3s4OxUb-YqhWLaFZvM4PZq-VFbskg0G1UakCpbvzmpZPgut4jAwR" alt="Claire Beaumont" class="w-20 h-20 rounded-full object-cover border border-warm-brown shrink-0">
+              <div class="flex flex-col gap-1">
+                <div class="flex items-center gap-2.5">
+                  <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Claire Beaumont</h3>
+                  <span class="w-2.5 h-2.5 rounded-full bg-soft-sage border border-warm-brown" aria-hidden="true"></span>
+                  <span data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant">Painting · Sunlit Loft</span>
+                </div>
+                <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown text-pretty">
+                  “Saturdays feel like a neighborhood sketchbook club—lots of color mixing, shared ideas, and easy conversation.”
+                </p>
+              </div>
+            </article>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- Built for Everyone in the Studio: Three Role Cards -->
+      <section id="roles" class="max-w-[1280px] mx-auto px-6 lg:px-8 py-16 lg:py-20 flex flex-col gap-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+          <div class="flex flex-col gap-1.5">
+            <span data-design-text-token="label-lg" class="text-label-lg font-medium text-light-primary uppercase tracking-wider">How Workshop House works</span>
+            <h2 data-design-text-token="headline-lg" class="font-headline text-headline-lg-mobile lg:text-headline-lg text-warm-brown">
+              Built for everyone in the studio
+            </h2>
+          </div>
+          <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown max-w-md">
+            Every session runs smoothly thanks to the people learning, teaching, and hosting behind the scenes.
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-stretch">
+          <article class="bg-light-surface-container-lowest border border-warm-brown rounded p-6 flex flex-col justify-between gap-5">
+            <div class="flex flex-col gap-3">
+              <div class="w-11 h-11 rounded-md bg-peach-pink border border-warm-brown flex items-center justify-center text-warm-brown">
+                <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">palette</span>
+              </div>
+              <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Learners</h3>
+              <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown text-pretty">
+                Browse hands-on workshops by craft and reserve your seat with all materials ready at the bench.
+              </p>
+            </div>
+            <a href="#workshops" data-design-text-token="label-lg" class="inline-flex items-center gap-1.5 font-body text-label-lg font-medium text-light-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">
+              Explore workshops
+              <span class="material-symbols-outlined text-title-md" aria-hidden="true">arrow_forward</span>
+            </a>
+          </article>
+
+          <article class="bg-light-surface-container-lowest border border-warm-brown rounded p-6 flex flex-col justify-between gap-5">
+            <div class="flex flex-col gap-3">
+              <div class="w-11 h-11 rounded-md bg-soft-sage border border-warm-brown flex items-center justify-center text-warm-brown">
+                <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">handyman</span>
+              </div>
+              <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Trainers</h3>
+              <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown text-pretty">
+                Working artists and craftspeople who lead small-group sessions and guide every project step by step.
+              </p>
+            </div>
+            <a href="#community" data-design-text-token="label-lg" class="inline-flex items-center gap-1.5 font-body text-label-lg font-medium text-light-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">
+              Meet our trainers
+              <span class="material-symbols-outlined text-title-md" aria-hidden="true">arrow_forward</span>
+            </a>
+          </article>
+
+          <article class="bg-light-surface-container-lowest border border-warm-brown rounded p-6 flex flex-col justify-between gap-5">
+            <div class="flex flex-col gap-3">
+              <div class="w-11 h-11 rounded-md bg-powder-blue border border-warm-brown flex items-center justify-center text-warm-brown">
+                <span class="material-symbols-outlined text-headline-sm" aria-hidden="true">event_note</span>
+              </div>
+              <h3 data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Coordinators</h3>
+              <p data-design-text-token="body-md" class="font-body text-body-md text-warm-brown text-pretty">
+                Neighborhood studio hosts who curate monthly schedules, prepare tools, and welcome every group.
+              </p>
+            </div>
+            <a href="#community" data-design-text-token="label-lg" class="inline-flex items-center gap-1.5 font-body text-label-lg font-medium text-light-primary hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-light-primary">
+              See studio standards
+              <span class="material-symbols-outlined text-title-md" aria-hidden="true">arrow_forward</span>
+            </a>
+          </article>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Warm Footer -->
+    <footer class="bg-light-surface-container border-t border-warm-brown">
+      <div class="max-w-[1280px] mx-auto px-6 lg:px-8 py-12">
+        <div class="grid grid-cols-1 md:grid-cols-12 gap-8 pb-10 border-b border-light-outline-variant">
+          <div class="md:col-span-5 flex flex-col gap-3">
+            <span data-design-text-token="headline-sm" class="font-headline text-headline-sm text-warm-brown">Workshop House</span>
+            <p data-design-text-token="body-sm" class="font-body text-body-sm text-light-on-surface-variant max-w-sm">
+              A warm, trustworthy creative workshop community connecting learners, trainers, and neighborhood studios.
+            </p>
+            <span data-design-text-token="body-sm" class="font-body text-body-sm text-warm-brown pt-1">hello@workshophouse.co · 218 Hoyt Street, Brooklyn</span>
+          </div>
+
+          <div class="md:col-span-2 flex flex-col gap-2.5">
+            <span data-design-text-token="label-sm" class="text-label-sm text-warm-brown uppercase">Workshops</span>
+            <a href="#workshops" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Pottery &amp; Ceramics</a>
+            <a href="#workshops" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Woodworking</a>
+            <a href="#workshops" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Painting</a>
+            <a href="#workshops" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Photography</a>
+          </div>
+
+          <div class="md:col-span-3 flex flex-col gap-2.5">
+            <span data-design-text-token="label-sm" class="text-label-sm text-warm-brown uppercase">Community</span>
+            <a href="#community" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Meet our trainers</a>
+            <a href="#roles" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">How it works</a>
+            <a href="#community" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Studio standards</a>
+          </div>
+
+          <div class="md:col-span-2 flex flex-col gap-2.5">
+            <span data-design-text-token="label-sm" class="text-label-sm text-warm-brown uppercase">Account</span>
+            <a href="#workshops" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Browse Workshops</a>
+            <a href="#top" class="font-body text-body-sm text-light-on-surface-variant hover:text-light-primary">Sign In</a>
+          </div>
+        </div>
+
+        <div class="pt-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 font-body text-body-sm text-light-on-surface-variant">
+          <span data-design-text-token="body-sm">© 2026 Workshop House. Made for curious hands.</span>
+          <div class="flex items-center gap-6">
+            <a href="#top" class="hover:text-warm-brown">Cancellation policy</a>
+            <a href="#top" class="hover:text-warm-brown">Accessibility</a>
+          </div>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    (function () {
+      var filterBtns = document.querySelectorAll('[data-cozy-filter]');
+      var cards = document.querySelectorAll('[data-cozy-card]');
+      var detailBtns = document.querySelectorAll('[data-cozy-detail]');
+      var searchForm = document.getElementById('cozy-search-form');
+      var searchInput = document.getElementById('cozy-search-input');
+
+      filterBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var cat = btn.getAttribute('data-cozy-filter') || 'all';
+          cards.forEach(function (card) {
+            if (cat === 'all' || card.getAttribute('data-category') === cat) {
+              card.classList.remove('hidden');
+            } else {
+              card.classList.add('hidden');
+            }
+          });
+        });
+      });
+
+      if (searchForm && searchInput) {
+        searchForm.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var q = searchInput.value.trim().toLowerCase();
+          cards.forEach(function (card) {
+            if (!q || card.textContent.toLowerCase().indexOf(q) !== -1) {
+              card.classList.remove('hidden');
+            } else {
+              card.classList.add('hidden');
+            }
+          });
+          var workshops = document.getElementById('workshops');
+          if (workshops) workshops.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        });
+      }
+
+      detailBtns.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+          var span = btn.querySelector('span[data-design-text-token]');
+          if (!span) return;
+          span.textContent = span.textContent === 'Details opened' ? 'View details' : 'Details opened';
+        });
+      });
+    })();
+  </script>
+
+
+</body></html>

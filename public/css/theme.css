@@ -460,3 +460,16 @@ th {
 tbody tr:hover {
   background-color: var(--color-surface-hover);
 }
+
+/* QR code (generated SVG has a fixed width attribute, so force it to fit its box) */
+.qr-code {
+  width: 72px;
+  height: 72px;
+  flex-shrink: 0;
+}
+
+.qr-code svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}

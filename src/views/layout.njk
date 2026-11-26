@@ -131,7 +131,54 @@
 
   <!-- Footer landmark (WCAG 1.3.1) -->
   <footer class="site-footer" role="contentinfo">
-    <p>&copy; 2026 Workshop House &bull; Advanced Web Programming</p>
+    <div class="footer-container">
+      <div class="footer-column footer-brand">
+        <a href="/" class="footer-brand-link" aria-label="Workshop House homepage">Workshop House</a>
+        <p class="footer-description text-light-on-surface-variant max-w-sm">
+          A warm, trustworthy creative workshop community connecting learners, trainers, and neighborhood studios.
+        </p>
+      </div>
+
+      <div class="footer-column footer-links">
+        <h4 class="footer-section-header uppercase text-label-sm tracking-wider text-warm-brown">Workshops</h4>
+        <ul class="footer-link-list">
+          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Pottery & Ceramics</a></li>
+          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Woodworking</a></li>
+          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Painting</a></li>
+          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Photography</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column footer-community">
+        <h4 class="footer-section-header uppercase text-label-sm tracking-wider text-warm-brown">Community</h4>
+        <ul class="footer-link-list">
+          {% if currentUser %}
+            {% if currentUser.role == 'trainer' %}
+              <li><a href="/trainer/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Meet our trainers</a></li>
+            {% endif %}
+            {% if currentUser.role == 'coordinator' or currentUser.role == 'trainer' %}
+              <li><a href="#" class="footer-link text-light-on-surface-variant hover:text-light-primary">How it works</a></li>
+            {% endif %}
+          {% endif %}
+          <li><a href="#" class="footer-link text-light-on-surface-variant hover:text-light-primary">Studio standards</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column footer-account">
+        <h4 class="footer-section-header uppercase text-label-sm tracking-wider text-warm-brown">Account</h4>
+        <ul class="footer-link-list">
+          {% if currentUser %}
+            <li><a href="/preferences" class="footer-link text-light-on-surface-variant hover:text-light-primary">Browse Workshops</a></li>
+            <li><a href="/preferences" class="footer-link text-light-on-surface-variant hover:text-light-primary">Preferences</a></li>
+          {% else %}
+            <li><a href="/auth/login" class="footer-link text-light-on-surface-variant hover:text-light-primary">Sign In</a></li>
+          {% endif %}
+        </ul>
+        <p class="footer-copyright mt-2 text-light-on-surface-variant">
+          © 2026 Workshop House · Advanced Web Programming
+        </p>
+      </div>
+    </div>
   </footer>
 
   {% block scripts %}{% endblock %}

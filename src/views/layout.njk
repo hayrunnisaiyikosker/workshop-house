@@ -132,52 +132,46 @@
   <!-- Footer landmark (WCAG 1.3.1) -->
   <footer class="site-footer" role="contentinfo">
     <div class="footer-container">
+
       <div class="footer-column footer-brand">
         <a href="/" class="footer-brand-link" aria-label="Workshop House homepage">Workshop House</a>
-        <p class="footer-description text-light-on-surface-variant max-w-sm">
-          A warm, trustworthy creative workshop community connecting learners, trainers, and neighborhood studios.
+        <p class="footer-description">
+          A short-course platform connecting learners, trainers, and coordinators.
         </p>
       </div>
 
-      <div class="footer-column footer-links">
-        <h4 class="footer-section-header uppercase text-label-sm tracking-wider text-warm-brown">Workshops</h4>
+      <div class="footer-column">
+        <h2 class="site-footer__heading">Workshops</h2>
         <ul class="footer-link-list">
-          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Pottery & Ceramics</a></li>
-          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Woodworking</a></li>
-          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Painting</a></li>
-          <li><a href="/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Photography</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-column footer-community">
-        <h4 class="footer-section-header uppercase text-label-sm tracking-wider text-warm-brown">Community</h4>
-        <ul class="footer-link-list">
-          {% if currentUser %}
-            {% if currentUser.role == 'trainer' %}
-              <li><a href="/trainer/sessions" class="footer-link text-light-on-surface-variant hover:text-light-primary">Meet our trainers</a></li>
-            {% endif %}
-            {% if currentUser.role == 'coordinator' or currentUser.role == 'trainer' %}
-              <li><a href="#" class="footer-link text-light-on-surface-variant hover:text-light-primary">How it works</a></li>
-            {% endif %}
+          <li><a href="/sessions" class="footer-link">Browse all sessions</a></li>
+          {% if currentUser and currentUser.role == "learner" %}
+            <li><a href="/my-sessions" class="footer-link">My enrolled sessions</a></li>
           {% endif %}
-          <li><a href="#" class="footer-link text-light-on-surface-variant hover:text-light-primary">Studio standards</a></li>
         </ul>
       </div>
 
-      <div class="footer-column footer-account">
-        <h4 class="footer-section-header uppercase text-label-sm tracking-wider text-warm-brown">Account</h4>
+      <div class="footer-column">
+        <h2 class="site-footer__heading">Account</h2>
         <ul class="footer-link-list">
           {% if currentUser %}
-            <li><a href="/preferences" class="footer-link text-light-on-surface-variant hover:text-light-primary">Browse Workshops</a></li>
-            <li><a href="/preferences" class="footer-link text-light-on-surface-variant hover:text-light-primary">Preferences</a></li>
+            <li><a href="/preferences" class="footer-link">Preferences</a></li>
+            <li><a href="/dashboard" class="footer-link">Dashboard</a></li>
+            {% if currentUser.role == "coordinator" %}
+              <li><a href="/coordinator/sessions" class="footer-link">Coordinator dashboard</a></li>
+            {% endif %}
+            {% if currentUser.role == "trainer" %}
+              <li><a href="/trainer/sessions" class="footer-link">Trainer dashboard</a></li>
+            {% endif %}
           {% else %}
-            <li><a href="/auth/login" class="footer-link text-light-on-surface-variant hover:text-light-primary">Sign In</a></li>
+            <li><a href="/auth/login" class="footer-link">Sign in</a></li>
           {% endif %}
         </ul>
-        <p class="footer-copyright mt-2 text-light-on-surface-variant">
-          © 2026 Workshop House · Advanced Web Programming
-        </p>
       </div>
+
+      <div class="footer-column footer-column--full">
+        <p class="footer-copyright">&copy; 2026 Workshop House &middot; Advanced Web Programming</p>
+      </div>
+
     </div>
   </footer>
 

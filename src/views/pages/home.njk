@@ -1,65 +1,27 @@
 {% extends "layout.njk" %}
 
 {% block content %}
-<div class="card hero-card">
-  <h1 class="hero-headline">Learn a craft by doing, together.</h1>
-  <p class="hero-body text-light-on-surface-variant">Small-group workshops in pottery, woodworking, painting, and analog photography.</p>
-</div>
 
-<!-- Arch-shaped visual block (CSS-only) -->
-<div class="arch-shape" style="width: 100%; max-width: 640px; margin: 0 auto var(--spacing-6); height: 300px; background: var(--color-surface); border-radius: 0 0 9999px 9999px; box-shadow: 0 -20px 40px rgba(63, 46, 30, 0.15); overflow: hidden; aria-hidden="true"></div>
-<!-- End arch shape -->
-
-<section class="upcoming-sessions" style="padding: var(--spacing-6) 0;">
-  <div class="max-width-1280 mx-auto px-6 lg:px-8">
-    <div style="text-align: center; margin-bottom: var(--spacing-6);">
-      <span class="uppercase text-label-sm tracking-wider text-warm-brown" style="display: block; margin-bottom: var(--spacing-2);">Upcoming Sessions</span>
-      <h2 class="headline-lg font-headline text-headline-lg-mobile lg:text-headline-lg text-warm-brown">Save a seat at the worktable</h2>
-    </div>
-
-    {% set allSessions = sessions | default([]) %}
-    {% set upcoming = allSessions | selectattr('starts_at') | sort(attribute='starts_at') | slice(0,4) %}
-
-    {% if upcoming.length > 0 %}
-      {% set featured = upcoming[0] %}
-      <!-- Featured card (larger) -->
-      <article class="featured-card card" style="max-width: 1280px; margin: 0 auto var(--spacing-6); background: var(--color-surface); border: 2px solid var(--color-border); border-radius: var(--border-radius); overflow: hidden;">
-        {% if featured.image_url %}
-          <div class="aspect-[16/10] overflow-hidden border-b border-warm-brown bg-light-surface-container" style="height: 200px; background-size: cover; background-position: center; alt="{{ featured.image_alt or 'Workshop session' }}"></div>
-        {% else %}
-          <div class="aspect-[16/10] h-64 bg-light-surface-container border-b border-warm-brown" aria-hidden="true"></div>
-        {% endif %}
-        <div class="p-6 lg:p-8 flex flex-col justify-between gap-6">
-          <div class="flex flex-col gap-3">
-            <div class="flex flex-wrap items-center justify-between gap-3">
-              <span class="inline-flex items-center gap-2 px-3 py-1 rounded-sm bg-butter-yellow border border-warm-brown font-body text-body-sm font-medium text-warm-brown">Next up · {{ featured.course_title | default('Upcoming Session') }}</span>
-              <span class="inline-flex items-center gap-1.5 font-body text-body-sm font-medium text-warm-brown tabular-nums">{{ featured.remaining_seats | default(0) }} of {{ featured.capacity | default(20) }} seats left</span>
-            </div>
-            <h3 class="font-headline text-headline-lg-mobile lg:text-headline-lg text-warm-brown" style="">{{ featured.course_title | default('Upcoming Session') }}</h3>
-            <p class="font-body text-body-md text-warm-brown text-pretty" style="">{{ featured.course_description | default('A hands-on workshop experience.') | truncate(120) }}</p>
-            <div class="flex flex-wrap items-center gap-x-5 gap-y-2 pt-1 font-body text-body-sm font-medium text-warm-brown" style="">
-              <span class="inline-flex items-center gap-1.5" style="">{{ featured.starts_at | default('') }} · {{ featured.room | default('') }}</span>
-              <span class="inline-flex items-center gap-1.5" style="">{{ featured.trainer_name | default('Trainer') }}</span>
-            </div>
-          </div>
-          <div class="pt-4 border-t border-light-outline-variant flex flex-wrap items-center justify-between gap-4">
-            <div class="flex items-center gap-3" style="">
-              <img src="https://lh3.googleusercontent.com/aida/ALJJyrAXIPnJnLpAicE74hlFdEGyxqQ8WtW_cW7o-jb0OSUHN5HPz3PwU3NbFjTxbPkt3sRI93ILQWRegZOOjLePzl0gJDixX1uCMImTlA_mZQvR-zSGUCVgH6pkWq_-W4nw_GJXmgsFws1eB8GvI0p6Uhug1R_2sE_pfdZo0n_Uy_bhdcpFkEhJxOchnLQy6y996wL3wbcZCpeC7eUEgXNuPyfgZK41rSCickKt4pXLhOZ5tdCNwGLZDVjo" alt="Elena Vance" class="w-9 h-9 rounded-full object-cover border border-warm-brown" style="object-fit: cover; width: 36px; height: 36px;"><span class="font-body text-body-sm font-medium text-warm-brown" style="">{{ featured.trainer_name | default('Trainer') }} · ${{ featured.price | default(0) }}</span>
-            </div>
-            <a href="/sessions/{{ featured.id }}" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change" style="">View details</a>
-          </div>
-        </div>
-      </article>
-
-    {% endif %}
-</section>
-  
-  {% if currentUser %}
-    <div class="alert alert-info">
-      <p>You are signed in as <strong>{{ currentUser.name }}</strong> with the role of <strong>{{ currentUser.role | capitalize }}</strong>.</p>
-    </div>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1rem;">
+{# ── Hero ──────────────────────────────────────────────────────────── #}
+<section class="hero" aria-label="Welcome">
+  <div class="hero__visual" aria-hidden="true"></div>
+  <div class="hero__body">
+    <h1 class="hero__title">Learn a craft by doing, together.</h1>
+    <p class="hero__lead">Small-group workshops in hands-on skills. Book a seat, show up, and make something real.</p>
+    <div class="hero__actions">
       <a href="/sessions" class="btn btn-primary">Browse All Workshops</a>
+      {% if not currentUser %}
+        <a href="/auth/login" class="btn btn-secondary">Sign In</a>
+      {% endif %}
+    </div>
+  </div>
+</section>
+
+{# ── Signed-in user quick links ───────────────────────────────────── #}
+{% if currentUser %}
+  <div class="alert alert-info" role="status">
+    <p>Signed in as <strong>{{ currentUser.name }}</strong> ({{ currentUser.role | capitalize }}).</p>
+    <div class="hero__actions alert__actions">
       {% if currentUser.role == 'coordinator' %}
         <a href="/coordinator/sessions" class="btn btn-secondary">Coordinator Dashboard</a>
       {% elseif currentUser.role == 'trainer' %}
@@ -67,88 +29,105 @@
       {% else %}
         <a href="/my-sessions" class="btn btn-secondary">My Enrolled Sessions</a>
       {% endif %}
-    </div>
-  {% else %}
-    <p>Please sign in to view available workshop sessions and manage your enrollments.</p>
-    <div style="display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem;">
-      <a href="/auth/login" class="btn btn-primary">Sign In to Your Account</a>
-      <a href="/sessions" class="btn btn-secondary">Browse Available Workshops</a>
-    </div>
-  {% endif %}
-</div>
-<!-- Smaller cards -->
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch" style="max-width: 1280px; margin: 0 auto;">
-  {% for session in upcoming.slice(1) %}
-    <article class="card" style="background: var(--color-surface); border: 2px solid var(--color-border); border-radius: var(--border-radius); overflow: hidden;">
-      {% if session.image_url %}
-        <div class="aspect-[16/10] w-full overflow-hidden border-b border-warm-brown bg-light-surface-container" style="height: 120px; background-size: cover; background-position: center; alt="{{ session.image_alt or 'Workshop session' }}"></div>
-      {% else %}
-        <div class="aspect-[16/10] w-full h-48 bg-light-surface-container border-b border-warm-brown" aria-hidden="true"></div>
-      {% endif %}
-      <div class="p-4">
-        <div class="flex flex-col gap-2.5">
-          <div class="flex items-center justify-between gap-2">
-            <span class="inline-flex items-center gap-2 font-body text-body-sm font-medium text-warm-brown" style=""><span class="w-2.5 h-2.5 rounded-full bg-butter-yellow border border-warm-brown" aria-hidden="true"></span>{{ session.course_title | default('Upcoming') }}</span>
-            <span class="inline-flex items-center gap-1 font-body text-body-sm font-medium text-warm-brown tabular-nums" style="">{{ session.remaining_seats | default(0) }} of {{ session.capacity | default(20) }} free</span>
-          </div>
-          <h3 style="">{{ session.course_title | default('Upcoming') }}</h3>
-          <p style="">{{ session.course_description | default('') | truncate(80) }}</p>
-        </div>
-        <div class="px-3 py-2 bg-light-surface-container-low border-t border-light-outline-variant flex items-center justify-between gap-3" style="">
-          <span class="font-body text-body-sm font-medium text-warm-brown" style="">{{ session.trainer_name | default('Trainer') }} · ${{ session.price | default(0) }}</span>
-          <a href="/sessions/{{ session.id }}" class="whitespace-nowrap shrink-0 px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change" style="">View details</a>
-        </div>
-      </article>
-  {% endfor %}
-</div>
-
-{% if upcoming.length == 0 %}
-<div class="card" style="text-align: center; padding: var(--spacing-6) var(--spacing-4); color: var(--color-text-muted);" aria-live="polite">
-  <p>No upcoming sessions at this time. Please check back later.</p>
-</div>
-{% endif %}
-<!-- Roles section -->
-<section class="roles-section" style="padding: var(--spacing-6) 0; background: var(--color-bg);">
-  <div class="max-width-1280 mx-auto px-6 lg:px-8">
-    <div style="text-align: center; margin-bottom: var(--spacing-6);">
-      <span class="uppercase text-label-sm tracking-wider text-warm-brown" style="display: block; margin-bottom: var(--spacing-2);">How Workshop House Works</span>
-      <h2 class="headline-lg font-headline text-headline-lg-mobile lg:text-headline-lg text-warm-brown">Built for everyone in the studio</h2>
-    </div>
-
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-stretch" style="max-width: 1280px; margin: 0 auto;">
-      <!-- Learners card -->
-      <article class="card" style="background: var(--color-surface); border: 2px solid var(--color-border); border-radius: var(--border-radius); overflow: hidden;">
-        <div class="p-6 flex flex-col justify-between gap-4">
-          <div>
-            <h3 class="font-headline text-headline-sm text-warm-brown">Learners</h3>
-            <p class="font-body text-body-md text-warm-brown text-pretty">Browse hands-on workshops by craft and reserve your seat with all materials ready at the bench.</p>
-          </div>
-          <a href="/sessions" class="inline-flex items-center gap-2 px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change">Explore workshops</a>
-        </div>
-      </article>
-
-      <!-- Trainers card -->
-      <article class="card" style="background: var(--color-surface); border: 2px solid var(--color-border); border-radius: var(--border-radius); overflow: hidden;">
-        <div class="p-6 flex flex-col justify-between gap-4">
-          <div>
-            <h3 class="font-headline text-headline-sm text-warm-brown">Trainers</h3>
-            <p class="font-body text-body-md text-warm-brown text-pretty">Working artists and craftspeople who lead small-group sessions and guide every project step by step.</p>
-          </div>
-          <a href="/trainer/sessions" class="inline-flex items-center gap-2 px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change">My sessions</a>
-        </div>
-      </article>
-
-      <!-- Coordinators card -->
-      <article class="card" style="background: var(--color-surface); border: 2px solid var(--color-border); border-radius: var(--border-radius); overflow: hidden;">
-        <div class="p-6 flex flex-col justify-between gap-4">
-          <div>
-            <h3 class="font-headline text-headline-sm text-warm-brown">Coordinators</h3>
-            <p class="font-body text-body-md text-warm-brown text-pretty">Neighborhood studio hosts who curate monthly schedules, prepare tools, and welcome every group.</p>
-          </div>
-          <a href="/coordinator/sessions" class="inline-flex items-center gap-2 px-4 py-2 rounded bg-light-primary text-light-on-primary font-body text-label-lg font-medium hover:bg-light-primary-container transition-colors duration-state-change">Manage sessions</a>
-        </div>
-      </article>
+      <a href="/dashboard" class="btn btn-secondary">Analytics Dashboard</a>
     </div>
   </div>
+{% endif %}
+
+{# ── Upcoming sessions ────────────────────────────────────────────── #}
+<section class="sessions-section" aria-labelledby="sessions-heading">
+  <h2 id="sessions-heading" class="sessions-section__heading">Upcoming Workshops</h2>
+
+  {% set allSessions = sessions | default([]) %}
+
+  {% if allSessions.length == 0 %}
+    <div class="empty-state" role="status">
+      <p>No upcoming workshops are scheduled yet. Check back soon!</p>
+    </div>
+
+  {% else %}
+    {# Featured (first) session #}
+    {% set featured = allSessions[0] %}
+    <article class="session-card session-card--featured" aria-labelledby="featured-title">
+      <div class="session-card__header">
+        <span class="session-card__label">Next up</span>
+        <span class="session-card__seats">
+          <span aria-hidden="true">&#10033;</span>
+          {{ featured.remaining_seats }} of {{ featured.capacity }} seats left
+        </span>
+      </div>
+      <h3 id="featured-title" class="session-card__title">{{ featured.course_title }}</h3>
+      <p class="session-card__desc">{{ featured.course_description | truncate(160) }}</p>
+      <dl class="session-card__meta">
+        <div class="session-card__meta-item">
+          <dt>When</dt>
+          <dd>{{ featured.starts_at | formatDate }}</dd>
+        </div>
+        <div class="session-card__meta-item">
+          <dt>Room</dt>
+          <dd>{{ featured.room }}</dd>
+        </div>
+        <div class="session-card__meta-item">
+          <dt>Trainer</dt>
+          <dd>{{ featured.trainer_name }}</dd>
+        </div>
+      </dl>
+      <a href="/sessions/{{ featured.id }}" class="btn btn-primary session-card__cta">View details</a>
+    </article>
+
+    {# Remaining sessions as smaller cards #}
+    {% if allSessions.length > 1 %}
+      <div class="session-grid" aria-label="More upcoming sessions">
+        {% for session in allSessions %}
+          {% if loop.index > 1 and loop.index <= 4 %}
+            <article class="session-card" aria-labelledby="session-title-{{ loop.index }}">
+              <div class="session-card__header">
+                <span class="session-card__seats">
+                  {{ session.remaining_seats }} / {{ session.capacity }} free
+                </span>
+              </div>
+              <h3 id="session-title-{{ loop.index }}" class="session-card__title">{{ session.course_title }}</h3>
+              <p class="session-card__desc">{{ session.course_description | truncate(80) }}</p>
+              <div class="session-card__footer">
+                <span class="session-card__meta-inline">{{ session.starts_at | formatDate }} &bull; {{ session.trainer_name }}</span>
+                <a href="/sessions/{{ session.id }}" class="btn btn-secondary session-card__cta-sm">View</a>
+              </div>
+            </article>
+          {% endif %}
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    <div class="sessions-section__more">
+      <a href="/sessions" class="btn btn-secondary">See all workshops &rarr;</a>
+    </div>
+  {% endif %}
 </section>
+
+{# ── Roles section ────────────────────────────────────────────────── #}
+<section class="roles-section" aria-labelledby="roles-heading">
+  <h2 id="roles-heading" class="roles-section__heading">Built for everyone in the studio</h2>
+  <div class="roles-grid">
+
+    <article class="role-card" aria-labelledby="role-learner">
+      <h3 id="role-learner" class="role-card__title">Learners</h3>
+      <p class="role-card__desc">Browse hands-on workshops and reserve your seat. All materials are ready at the bench.</p>
+      <a href="/sessions" class="btn btn-primary role-card__cta">Explore workshops</a>
+    </article>
+
+    <article class="role-card" aria-labelledby="role-trainer">
+      <h3 id="role-trainer" class="role-card__title">Trainers</h3>
+      <p class="role-card__desc">Working practitioners who lead small-group sessions and guide every project step by step.</p>
+      <a href="/trainer/sessions" class="btn btn-primary role-card__cta">My sessions</a>
+    </article>
+
+    <article class="role-card" aria-labelledby="role-coordinator">
+      <h3 id="role-coordinator" class="role-card__title">Coordinators</h3>
+      <p class="role-card__desc">Studio hosts who curate monthly schedules, prepare tools, and welcome every group.</p>
+      <a href="/coordinator/sessions" class="btn btn-primary role-card__cta">Manage sessions</a>
+    </article>
+
+  </div>
+</section>
+
 {% endblock %}
